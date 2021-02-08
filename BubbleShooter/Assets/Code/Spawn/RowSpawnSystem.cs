@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Grid;
+using Assets.Code.Mono;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -11,6 +12,9 @@ namespace Assets.Code.Spawn
         {
             public float3 Position { get; set; }
         }
+
+        [Zenject.Inject]
+        GridCellBehaviour gridCellPrefab;
 
         protected override void OnCreate()
         {
@@ -26,11 +30,15 @@ namespace Assets.Code.Spawn
 
             for (int cellNumber = 0; cellNumber < row.Length; cellNumber++)
             {
-                var entity = EntityManager.CreateEntity();
+                var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+                var prefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(gridCellPrefab.gameObject, settings);
+
+                var entity = EntityManager.Instantiate(prefab);
                 EntityManager.SetName(entity, "GridCell");
-                EntityManager.AddComponentData(entity, new LocalToWorld());
-                EntityManager.AddComponentData(entity, new Translation { Value = row[cellNumber].Position });
+                EntityManager.SetComponentData(entity, new Translation { Value = row[cellNumber].Position });
             }
+
+            EntityManager.DestroyEntity(GetSingletonEntity<SpawnRowTagCmp>());
         }
     }
 }
