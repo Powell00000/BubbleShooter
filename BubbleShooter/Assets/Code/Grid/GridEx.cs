@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Assets.Code.Grid
 {
-    class GridManager
+    class GridEx
     {
-        public static T[] GetRowData<T>(float radius, float3 startingCenteredPosition, int numberOfCells) where T : IGridPosition, new()
+        public static T[] GetCellsPositionsInARow<T>(float radius, float3 startingCenteredPosition, int numberOfCells, float margin = 0) where T : IGridPosition, new()
         {
-            float diameter = radius * 2;
+            float diameter = radius * 2 + margin;
 
             Vector3 radiusShiftRight = new Vector3(radius, 0, 0);
             Vector3 diameterShiftRight = radiusShiftRight * 2;
