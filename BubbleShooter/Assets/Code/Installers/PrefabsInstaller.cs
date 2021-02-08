@@ -12,7 +12,6 @@ namespace Assets.Code.Installers
 
         public override void InstallBindings()
         {
-            base.InstallBindings();
             Container.Bind<GridCellBehaviour>().FromInstance(cellPrefab);
         }
     }

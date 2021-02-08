@@ -16,7 +16,7 @@ namespace Assets.Code.Grid
             float width = diameter * numberOfCells;
             float halfWidth = width / 2;
 
-            Vector3 startingCellPosition = startingCenteredPosition - (float3)Vector3.left * halfWidth;
+            Vector3 startingCellPosition = startingCenteredPosition + (float3)Vector3.left * halfWidth;
             startingCellPosition += new Vector3(radius, 0, 0);
 
             T[] cellRow = new T[numberOfCells];
