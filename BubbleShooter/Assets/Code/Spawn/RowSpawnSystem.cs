@@ -20,15 +20,14 @@ namespace Assets.Code.Spawn
         protected override void OnCreate()
         {
             base.OnCreate();
-            RequireSingletonForUpdate<SpawnRowTagCmp>();
+            RequireSingletonForUpdate<SpawnRowCmp>();
         }
 
         protected override void OnUpdate()
         {
-            float radius = 1.5f;
-            float3 startingCenteredPosition = float3.zero;
-            int numberOfCells = 5;
-            CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(radius, startingCenteredPosition, numberOfCells);
+            SpawnRowCmp spawnRowCmp = GetSingleton<SpawnRowCmp>();
+
+            CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(spawnRowCmp.CellRadius, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
@@ -41,7 +40,7 @@ namespace Assets.Code.Spawn
                 beginSimBuffer.SetComponent(entity, new Translation { Value = row[cellNumber].Position });
             }
 
-            beginSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowTagCmp>());
+            beginSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());
             beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
         }
     }

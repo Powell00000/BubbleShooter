@@ -1,7 +1,6 @@
 ﻿using Assets.Code.Grid;
 using Assets.Code.Spawn;
 using Unity.Entities;
-//using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -17,8 +16,8 @@ namespace Assets.Code.Movement
         protected override void OnUpdate()
         {
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer().AsParallelWriter();
-            //add MoveDownCmp to entities
 
+            //add MoveDownCmp to entities
             if (HasSingleton<RowSpawnedTagCmp>())
             {
                 Entities
@@ -26,7 +25,7 @@ namespace Assets.Code.Movement
                     .WithNone<MoveDownCmp>()
                     .ForEach((Entity e, int entityInQueryIndex) =>
                     {
-                        beginSimBuffer.AddComponent(entityInQueryIndex, e, new MoveDownCmp { TimeLeft = 1 });
+                        beginSimBuffer.AddComponent(entityInQueryIndex, e, new MoveDownCmp { TimeLeft = 0.2f });
                     })
                     .Schedule();
 
