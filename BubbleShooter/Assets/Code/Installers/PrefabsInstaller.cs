@@ -1,6 +1,5 @@
-﻿using Assets.Code.Bubbles;
-using Assets.Code.Bubbles.Hybrid;
-using Assets.Code.Mono;
+﻿using Assets.Code.Bubbles.Hybrid;
+using Assets.Code.Grid.Hybrid;
 using UnityEngine;
 using Zenject;
 
@@ -10,14 +9,14 @@ namespace Assets.Code.Installers
     internal class PrefabsInstaller : ScriptableObjectInstaller
     {
         [SerializeField]
-        private GridCellBehaviour cellPrefab;
+        private Cell cellPrefab;
 
         [SerializeField]
         private Bubble bubblePrefab;
 
         public override void InstallBindings()
         {
-            Container.Bind<GridCellBehaviour>().FromInstance(cellPrefab);
+            Container.Bind<Cell>().FromInstance(cellPrefab);
             Container.Bind<Bubble>().FromInstance(bubblePrefab);
         }
     }

@@ -18,7 +18,7 @@ namespace Assets.Code.Hybrid
             transform.position = entityManager.GetComponentData<Translation>(entity).Value;
         }
 
-        public virtual void ForceUpdatePosition(float3 newPosition)
+        public virtual void SetPosition(float3 newPosition)
         {
             transform.position = newPosition;
         }
