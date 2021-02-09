@@ -5,7 +5,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Assets.Code.Spawn
+namespace Assets.Code.Grid.Spawn
 {
     internal class RowSpawnSystem : SystemBaseWithBarriers
     {

@@ -1,18 +1,23 @@
-﻿using Assets.Code.Mono;
+﻿using Assets.Code.Bubbles;
+using Assets.Code.Mono;
 using UnityEngine;
 using Zenject;
 
 namespace Assets.Code.Installers
 {
     [CreateAssetMenu(menuName = "Installers/Prefabs")]
-    class PrefabsInstaller : ScriptableObjectInstaller
+    internal class PrefabsInstaller : ScriptableObjectInstaller
     {
         [SerializeField]
-        GridCellBehaviour cellPrefab;
+        private GridCellBehaviour cellPrefab;
+
+        [SerializeField]
+        private Bubble bubblePrefab;
 
         public override void InstallBindings()
         {
             Container.Bind<GridCellBehaviour>().FromInstance(cellPrefab);
+            Container.Bind<Bubble>().FromInstance(bubblePrefab);
         }
     }
 }

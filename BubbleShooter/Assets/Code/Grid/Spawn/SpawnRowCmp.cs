@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
 
-namespace Assets.Code.Spawn
+namespace Assets.Code.Grid.Spawn
 {
     internal struct SpawnRowCmp : IComponentData
     {

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3498086059245855782}
   - component: {fileID: 2177270095635778980}
   - component: {fileID: 6528009362039173660}
+  - component: {fileID: 1728207993765061955}
   m_Layer: 0
   m_Name: GridCell
   m_TagString: Untagged
@@ -71,6 +72,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfab5d7ea59a40847853967574993bfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OccupyingEntity: {fileID: 0}
+--- !u!114 &1728207993765061955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4621792971398500419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5ee2dc67d30054e8e090df3da04c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9171184365295816713
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 9171184365295816713}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 5980497279406499146}
   m_RootOrder: 0

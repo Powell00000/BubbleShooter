@@ -1,4 +1,4 @@
-﻿using Assets.Code.Spawn;
+﻿using Assets.Code.Grid.Spawn;
 using Unity.Entities;
 
 namespace Assets.Code.DOTS

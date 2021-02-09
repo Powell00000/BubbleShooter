@@ -1,5 +1,5 @@
 ﻿using Assets.Code.Grid;
-using Assets.Code.Spawn;
+using Assets.Code.Grid.Spawn;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
