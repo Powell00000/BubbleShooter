@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameSettings : ScriptableObject
 {
     [SerializeField]
-    private float cellRadius;
+    private int numberOfCellsInEvenRow = 8;
 
-    public float CellRadius => cellRadius;
+    public int NumberOfCellsInEvenRow => numberOfCellsInEvenRow;
 }

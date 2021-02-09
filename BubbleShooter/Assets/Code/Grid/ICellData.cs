@@ -2,8 +2,9 @@
 
 namespace Assets.Code.Grid
 {
-    interface IGridPosition
+    internal interface ICellData
     {
         float3 Position { get; set; }
+        float Diameter { get; set; }
     }
 }

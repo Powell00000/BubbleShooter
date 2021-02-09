@@ -1,17 +1,18 @@
 using Assets.Code.Grid.Spawn;
+using Assets.Code.Mono;
 using Unity.Entities;
 using UnityEngine;
 
-public class DebugMono : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private Transform spawnPosition;
 
-    [SerializeField]
-    private float radius;
+    [Zenject.Inject]
+    private GameSettings gameSettings;
 
-    [SerializeField]
-    private int numberOfCellsInEvenRow = 8;
+    [Zenject.Inject]
+    private CameraBounds cameraBounds;
 
     private bool isEvenRow = true;
 
@@ -19,10 +20,12 @@ public class DebugMono : MonoBehaviour
     private void SpawnRow()
     {
         var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
+        float cellDiameter = (cameraBounds.Right.x - cameraBounds.Left.x) / gameSettings.NumberOfCellsInEvenRow;
+
         World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new SpawnRowCmp
         {
-            CellCount = isEvenRow == true ? numberOfCellsInEvenRow : numberOfCellsInEvenRow - 1,
-            CellRadius = radius,
+            CellCount = isEvenRow == true ? gameSettings.NumberOfCellsInEvenRow : gameSettings.NumberOfCellsInEvenRow - 1,
+            CellDiameter = cellDiameter,
             Position = spawnPosition.position
         });
         isEvenRow = !isEvenRow;

@@ -7,5 +7,6 @@ namespace Assets.Code.Grid
     {
         public Entity OccupyingEntity;
         public bool IsEmpty => OccupyingEntity == Entity.Null;
+        public float Diameter;
     }
 }
