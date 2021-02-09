@@ -43,7 +43,8 @@ namespace Assets.Code.Movement
                     if (moveDownCmp.TimeLeft > 0)
                     {
                         moveDownCmp.TimeLeft -= dt;
-                        translation.Value -= new float3(0, cellCmp.Diameter, 0) * dt;
+                        //WHY 5?????
+                        translation.Value -= new float3(0, cellCmp.Diameter * 5, 0) * dt;
                     }
                     else
                     {
