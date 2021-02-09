@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Bubbles;
+using Assets.Code.Bubbles.Hybrid;
 using Assets.Code.Mono;
 using UnityEngine;
 using Zenject;

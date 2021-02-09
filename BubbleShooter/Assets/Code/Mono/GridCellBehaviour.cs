@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using Assets.Code.Hybrid;
 
 namespace Assets.Code.Mono
 {
-    class GridCellBehaviour : MonoBehaviour
+    internal class GridCellBehaviour : HybridMonoBase
     {
 
     }
