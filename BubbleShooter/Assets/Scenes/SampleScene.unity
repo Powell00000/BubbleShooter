@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 339056833}
   - component: {fileID: 339056832}
   m_Layer: 0
-  m_Name: Debug
+  m_Name: Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,8 +153,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPosition: {fileID: 2081246735}
-  radius: 1
-  numberOfCellsInEvenRow: 8
 --- !u!4 &339056833
 Transform:
   m_ObjectHideFlags: 0

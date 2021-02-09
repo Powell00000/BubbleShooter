@@ -1,5 +1,4 @@
 ﻿using Assets.Code.DOTS;
-using Assets.Code.Grid;
 using Assets.Code.Mono;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -9,9 +8,10 @@ namespace Assets.Code.Grid.Spawn
 {
     internal class RowSpawnSystem : SystemBaseWithBarriers
     {
-        private struct CellPosition : IGridPosition
+        private struct CellPosition : ICellData
         {
             public float3 Position { get; set; }
+            public float Diameter { get; set; }
         }
 
         [Zenject.Inject]
@@ -27,7 +27,7 @@ namespace Assets.Code.Grid.Spawn
         {
             SpawnRowCmp spawnRowCmp = GetSingleton<SpawnRowCmp>();
 
-            CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(spawnRowCmp.CellRadius, spawnRowCmp.Position, spawnRowCmp.CellCount);
+            CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
@@ -38,6 +38,8 @@ namespace Assets.Code.Grid.Spawn
 
                 var entity = beginSimBuffer.Instantiate(prefab);
                 beginSimBuffer.SetComponent(entity, new Translation { Value = row[cellNumber].Position });
+                beginSimBuffer.SetComponent(entity, new CellCmp { Diameter = row[cellNumber].Diameter });
+                beginSimBuffer.AddComponent(entity, new Scale { Value = row[cellNumber].Diameter });
             }
 
             beginSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());

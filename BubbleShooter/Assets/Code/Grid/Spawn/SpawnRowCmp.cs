@@ -7,6 +7,6 @@ namespace Assets.Code.Grid.Spawn
     {
         public float3 Position;
         public int CellCount;
-        public float CellRadius;
+        public float CellDiameter;
     }
 }

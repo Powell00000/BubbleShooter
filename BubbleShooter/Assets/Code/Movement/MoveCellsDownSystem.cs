@@ -15,7 +15,7 @@ namespace Assets.Code.Movement
 
         protected override void OnUpdate()
         {
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer().AsParallelWriter();
+            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
             //add MoveDownCmp to entities
             if (HasSingleton<RowSpawnedTagCmp>())
@@ -23,9 +23,9 @@ namespace Assets.Code.Movement
                 Entities
                     .WithAll<CellCmp>()
                     .WithNone<MoveDownCmp>()
-                    .ForEach((Entity e, int entityInQueryIndex) =>
+                    .ForEach((Entity e) =>
                     {
-                        beginSimBuffer.AddComponent(entityInQueryIndex, e, new MoveDownCmp { TimeLeft = 0.2f });
+                        beginSimBuffer.AddComponent(e, new MoveDownCmp { TimeLeft = 0.2f });
                     })
                     .Schedule();
 
@@ -33,22 +33,21 @@ namespace Assets.Code.Movement
                 EntityManager.DestroyEntity(GetSingletonEntity<RowSpawnedTagCmp>());
             }
 
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer().AsParallelWriter();
+            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
 
             //update MoveDownCmp
             float dt = Time.DeltaTime;
             Entities
-                .WithAll<CellCmp>()
-                .ForEach((Entity e, int entityInQueryIndex, ref MoveDownCmp moveDownCmp, ref Translation translation) =>
+                .ForEach((Entity e, ref MoveDownCmp moveDownCmp, ref Translation translation, in CellCmp cellCmp) =>
                 {
                     if (moveDownCmp.TimeLeft > 0)
                     {
                         moveDownCmp.TimeLeft -= dt;
-                        translation.Value -= new float3(0, 1, 0) * dt;
+                        translation.Value -= new float3(0, cellCmp.Diameter, 0) * dt;
                     }
                     else
                     {
-                        endSimBuffer.RemoveComponent<MoveDownCmp>(entityInQueryIndex, e);
+                        endSimBuffer.RemoveComponent<MoveDownCmp>(e);
                     }
                 })
                 .Schedule();
