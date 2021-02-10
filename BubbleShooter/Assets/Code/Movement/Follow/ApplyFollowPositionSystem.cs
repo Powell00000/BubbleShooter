@@ -11,7 +11,7 @@ namespace Assets.Code.Movement.Follow
             Entities
                 .ForEach((Entity e, ref Translation translation, in FollowEntityCmp followCmp) =>
                 {
-                    translation.Value = followCmp.UpdatedPosition;
+                    translation.Value = followCmp.TargetPosition;
                 })
                 .Schedule();
         }

@@ -8,11 +8,6 @@ namespace Assets.Code.Movement
 {
     internal class MoveCellsDownSystem : SystemBaseWithBarriers
     {
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-        }
-
         protected override void OnUpdate()
         {
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
@@ -35,21 +30,11 @@ namespace Assets.Code.Movement
 
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
 
-            //update MoveDownCmp
-            float dt = Time.DeltaTime;
             Entities
                 .ForEach((Entity e, ref MoveDownCmp moveDownCmp, ref Translation translation, in CellCmp cellCmp) =>
                 {
-                    if (moveDownCmp.TimeLeft > 0)
-                    {
-                        moveDownCmp.TimeLeft -= dt;
-                        //WHY 5?????
-                        translation.Value -= new float3(0, cellCmp.Diameter * 5, 0) * dt;
-                    }
-                    else
-                    {
-                        endSimBuffer.RemoveComponent<MoveDownCmp>(e);
-                    }
+                    translation.Value -= new float3(0, cellCmp.Diameter, 0);
+                    endSimBuffer.RemoveComponent<MoveDownCmp>(e);
                 })
                 .Schedule();
 
