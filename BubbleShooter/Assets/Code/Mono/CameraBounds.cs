@@ -14,6 +14,7 @@ namespace Assets.Code.Mono
         public Vector3 Bottom { get; protected set; }
         public Vector3 Left { get; protected set; }
         public Vector3 Right { get; protected set; }
+        public Camera Cam => cam;
 
         private void Start()
         {

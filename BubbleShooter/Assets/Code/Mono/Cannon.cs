@@ -1,5 +1,5 @@
 using Assets.Code.Bubbles.Mono;
-using BansheeGz.BGSpline.Curve;
+using Assets.Code.Mono;
 using UnityEngine;
 
 public class Cannon : MonoBehaviour
@@ -10,7 +10,8 @@ public class Cannon : MonoBehaviour
     [SerializeField]
     private Transform shootPoint;
 
-    //[Zenject.Inject]
+    [Zenject.Inject]
+    private CameraBounds cameraBounds;
     private ShootingBubble shootingBubblePrefab;
 
     [SerializeField]
