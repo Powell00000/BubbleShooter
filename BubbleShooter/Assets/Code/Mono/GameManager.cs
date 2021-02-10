@@ -1,6 +1,8 @@
 using Assets.Code.Grid.Spawn;
+using Assets.Code.Grid.Spawn.Hybrid;
 using Assets.Code.Mono;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -14,9 +16,9 @@ public class GameManager : MonoBehaviour
     [Zenject.Inject]
     private CameraBounds cameraBounds;
 
-    private bool isEvenRow = true;
+    public bool IsEvenRow { get; set; }
 
-    [ContextMenu("Spawn row")]
+    [ContextMenu("Spawn 1 row")]
     private void SpawnRow()
     {
         var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
@@ -24,10 +26,18 @@ public class GameManager : MonoBehaviour
 
         World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new SpawnRowCmp
         {
-            CellCount = isEvenRow == true ? gameSettings.NumberOfCellsInEvenRow : gameSettings.NumberOfCellsInEvenRow - 1,
+            CellCount = IsEvenRow == true ? gameSettings.NumberOfCellsInEvenRow : gameSettings.NumberOfCellsInEvenRow - 1,
             CellDiameter = cellDiameter,
             Position = spawnPosition.position
         });
-        isEvenRow = !isEvenRow;
+        IsEvenRow = !IsEvenRow;
+    }
+
+    [ContextMenu("Spawn init rows")]
+    private void SpawnRows()
+    {
+        float cellDiameter = (cameraBounds.Right.x - cameraBounds.Left.x) / gameSettings.NumberOfCellsInEvenRow;
+        World.DefaultGameObjectInjectionWorld.GetExistingSystem<InitialSpawnSystem>()
+            .SpawnInitialBoard(3, spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, cellDiameter, this);
     }
 }

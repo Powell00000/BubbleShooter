@@ -13,7 +13,9 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.AddComponentData(entity, new BubbleCmp());
             entityManager.AddComponentData(entity, new FollowEntityCmp { EntityToFollow = entityToFollow });
             entityManager.AddComponentData(entity, new CopyTransformToGameObject());
-            entityManager.AddComponentObject(Entity, transform);
+            entityManager.AddComponentObject(entity, transform);
+
+            entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
         }
     }
 }

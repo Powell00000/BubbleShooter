@@ -1,18 +1,11 @@
 ﻿using Assets.Code.DOTS;
 using Assets.Code.Grid.Hybrid;
 using Unity.Entities;
-using Unity.Mathematics;
 
 namespace Assets.Code.Grid.Spawn.Hybrid
 {
-    internal class RowSpawnSystem : SystemBaseWithBarriers
+    internal class RowSpawnSystem : CellSpawnSystem
     {
-        private struct CellPosition : ICellData
-        {
-            public float3 Position { get; set; }
-            public float Diameter { get; set; }
-        }
-
         [Zenject.Inject]
         private Cell gridCellPrefab = null;
 
@@ -25,14 +18,7 @@ namespace Assets.Code.Grid.Spawn.Hybrid
         protected override void OnUpdate()
         {
             SpawnRowCmp spawnRowCmp = GetSingleton<SpawnRowCmp>();
-
-            CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
-
-            for (int cellNumber = 0; cellNumber < row.Length; cellNumber++)
-            {
-                Cell cellHybridMono = UnityEngine.Object.Instantiate(gridCellPrefab).GetComponent<Cell>();
-                cellHybridMono.CreateAndSetupCellEntity(row[cellNumber]);
-            }
+            SpawnCellsInRow(gridCellPrefab, spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
