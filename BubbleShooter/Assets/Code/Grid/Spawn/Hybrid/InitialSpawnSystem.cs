@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 namespace Assets.Code.Grid.Spawn.Hybrid
 {
-    internal class InitialSpawnSystem : SystemBaseWithBarriers
+    internal class InitialSpawnSystem : CellSpawnSystem
     {
         [Zenject.Inject]
         private Cell gridCellPrefab;
@@ -20,13 +20,7 @@ namespace Assets.Code.Grid.Spawn.Hybrid
             {
                 float3 spawnPosition = position + new float3(0, -rowCount * cellDiameter, 0);
                 int cells = gameManager.IsEvenRow == true ? cellCount : cellCount - 1;
-                CellData[] row = GridEx.GetCellsPositionsInARow<CellData>(cellDiameter, spawnPosition, cells);
-
-                for (int cellNumber = 0; cellNumber < row.Length; cellNumber++)
-                {
-                    Cell cellHybridMono = UnityEngine.Object.Instantiate(gridCellPrefab).GetComponent<Cell>();
-                    cellHybridMono.CreateAndSetupCellEntity(row[cellNumber]);
-                }
+                SpawnCellsInRow(gridCellPrefab, cellDiameter, spawnPosition, cells);
                 gameManager.IsEvenRow = !gameManager.IsEvenRow;
             }
 

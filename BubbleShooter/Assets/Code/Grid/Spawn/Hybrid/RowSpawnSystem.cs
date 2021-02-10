@@ -4,7 +4,7 @@ using Unity.Entities;
 
 namespace Assets.Code.Grid.Spawn.Hybrid
 {
-    internal class RowSpawnSystem : SystemBaseWithBarriers
+    internal class RowSpawnSystem : CellSpawnSystem
     {
         [Zenject.Inject]
         private Cell gridCellPrefab = null;
@@ -18,13 +18,7 @@ namespace Assets.Code.Grid.Spawn.Hybrid
         protected override void OnUpdate()
         {
             SpawnRowCmp spawnRowCmp = GetSingleton<SpawnRowCmp>();
-            CellData[] row = GridEx.GetCellsPositionsInARow<CellData>(spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
-
-            for (int cellNumber = 0; cellNumber < row.Length; cellNumber++)
-            {
-                Cell cellHybridMono = UnityEngine.Object.Instantiate(gridCellPrefab).GetComponent<Cell>();
-                cellHybridMono.CreateAndSetupCellEntity(row[cellNumber]);
-            }
+            SpawnCellsInRow(gridCellPrefab, spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
