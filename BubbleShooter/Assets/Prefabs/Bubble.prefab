@@ -12,12 +12,9 @@ GameObject:
   - component: {fileID: 2973698783389872808}
   - component: {fileID: 3890752939651896455}
   - component: {fileID: 3463328231229284789}
-  - component: {fileID: 245179243970775038}
-  - component: {fileID: 2153967560268948039}
-  - component: {fileID: -1280584133890701207}
   - component: {fileID: 5050359115293275984}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,44 +96,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &245179243970775038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6105575479970991058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b59d6f0f6d90e5540a7924990ca1e84d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EntityToFollow: {fileID: 0}
---- !u!114 &2153967560268948039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6105575479970991058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ee45f272332323439cb027016b52c35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-1280584133890701207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6105575479970991058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionMode: 0
 --- !u!114 &5050359115293275984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +105,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6105575479970991058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a6590012bd43874aa8a8c101265f95f, type: 3}
+  m_Script: {fileID: 11500000, guid: d81d33facf7b2ab45988d4b69eee2352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

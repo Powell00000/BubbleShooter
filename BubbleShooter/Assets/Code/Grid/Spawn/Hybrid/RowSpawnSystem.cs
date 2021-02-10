@@ -1,10 +1,9 @@
 ﻿using Assets.Code.DOTS;
-using Assets.Code.Mono;
+using Assets.Code.Grid.Hybrid;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 
-namespace Assets.Code.Grid.Spawn
+namespace Assets.Code.Grid.Spawn.Hybrid
 {
     internal class RowSpawnSystem : SystemBaseWithBarriers
     {
@@ -15,7 +14,7 @@ namespace Assets.Code.Grid.Spawn
         }
 
         [Zenject.Inject]
-        private GridCellBehaviour gridCellPrefab = null;
+        private Cell gridCellPrefab = null;
 
         protected override void OnCreate()
         {
@@ -29,18 +28,13 @@ namespace Assets.Code.Grid.Spawn
 
             CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
-
             for (int cellNumber = 0; cellNumber < row.Length; cellNumber++)
             {
-                var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-                var prefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(gridCellPrefab.gameObject, settings);
-
-                var entity = beginSimBuffer.Instantiate(prefab);
-                beginSimBuffer.SetComponent(entity, new Translation { Value = row[cellNumber].Position });
-                beginSimBuffer.SetComponent(entity, new CellCmp { Diameter = row[cellNumber].Diameter });
-                beginSimBuffer.AddComponent(entity, new Scale { Value = row[cellNumber].Diameter });
+                Cell cellHybridMono = UnityEngine.Object.Instantiate(gridCellPrefab).GetComponent<Cell>();
+                cellHybridMono.CreateAndSetupCellEntity(row[cellNumber]);
             }
+
+            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
             beginSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());
             beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
