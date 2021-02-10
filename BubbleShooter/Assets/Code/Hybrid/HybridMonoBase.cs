@@ -1,3 +1,4 @@
+using Assets.Code.DOTS;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace Assets.Code.Hybrid
             entity = entityManager.CreateEntity();
             entityManager.AddComponentData(entity, new LocalToWorld());
             entityManager.AddComponentData(entity, new Translation());
+            entityManager.AddComponentData(entity, new JustSpawnedTagCmp());
             entityManager.AddComponentObject(Entity, this);
         }
     }
