@@ -32,18 +32,28 @@ public class GameManager : MonoBehaviour
 
     public static float CellDiameter => calculatedCellDiameter;
     public static bool Initialized => initialized;
+    public static int MaxRowsCount => maxRowsCount;
 
     private void Start()
     {
         InitializeCameraBounds();
         SetupWalls();
         CalculateCellDiameter();
+        CalculateMaxRowsCount();
         initialized = true;
     }
 
     private void CalculateCellDiameter()
     {
         calculatedCellDiameter = (cameraBounds.Right.x - cameraBounds.Left.x) / gameSettings.NumberOfCellsInEvenRow;
+    }
+
+    private void CalculateMaxRowsCount()
+    {
+        float height = Vector3.Distance(cameraBounds.Top, cameraBounds.Bottom);
+        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter);
+
+        Debug.Log($"{nameof(maxRowsCount)} = {maxRowsCount}");
     }
 
     private void InitializeCameraBounds()

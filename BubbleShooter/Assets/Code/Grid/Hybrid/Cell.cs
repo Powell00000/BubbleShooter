@@ -12,7 +12,7 @@ namespace Assets.Code.Grid.Hybrid
             CreateEntity();
             entityManager.AddComponentData(entity, new Translation { Value = cellData.Position });
             entityManager.AddComponentData(entity, new CellCmp { Diameter = cellData.Diameter });
-            entityManager.AddSharedComponentData(entity, new Row.RowSharedCmp { RowNumber = cellData.Row });
+            entityManager.AddSharedComponentData(entity, new Row.RowSharedCmp { RowNumber = cellData.Row, MaxRowNumber = GameManager.MaxRowsCount });
             entityManager.AddComponentData(entity, new Scale { Value = cellData.Diameter });
             transform.localScale *= cellData.Diameter;
             entityManager.AddComponentData(entity, new CopyTransformToGameObject());
