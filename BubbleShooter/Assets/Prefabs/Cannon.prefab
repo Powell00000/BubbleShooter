@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pivot: {fileID: 5021823003777400061}
   shootPoint: {fileID: 1949761382518810989}
-  shootCurve: {fileID: 0}
+  shootLine: {fileID: 0}
 --- !u!1 &5021823004152176137
 GameObject:
   m_ObjectHideFlags: 0

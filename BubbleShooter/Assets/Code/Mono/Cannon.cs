@@ -1,6 +1,5 @@
 using Assets.Code.Bubbles.Mono;
 using Assets.Code.Mono;
-using BansheeGz.BGSpline.Curve;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +18,7 @@ public class Cannon : MonoBehaviour
     private ShootingBubble shootingBubblePrefab;
 
     [SerializeField]
-    private BGCurve shootCurve;
+    private LineRenderer shootLine;
 
     private void Start()
     {
@@ -54,11 +53,11 @@ public class Cannon : MonoBehaviour
             Vector3 lookNormal = clampedRotation * Vector3.up;
 
             Vector3 rayForward = lookNormal;
-            Vector3 rayStartPosition = pivot.position;
+            Vector3 rayStartPosition = shootPoint.position;
 
             Debug.DrawRay(rayStartPosition, rayForward * 20, Color.red);
 
-            points.Add(pivot.position);
+            points.Add(rayStartPosition);
 
             yield return null;
 
@@ -86,29 +85,11 @@ public class Cannon : MonoBehaviour
                 }
             }
 
-            if (shootCurve.PointsCount > points.Count)
-            {
-                shootCurve.Clear();
-            }
+            shootLine.positionCount = points.Count;
 
-            if (shootCurve.PointsCount < points.Count)
+            for (int i = 0; i < points.Count; i++)
             {
-                shootCurve.Clear();
-            }
-
-            if (shootCurve.PointsCount == points.Count)
-            {
-                for (int i = 0; i < points.Count; i++)
-                {
-                    shootCurve.Points[i].PositionWorld = points[i];
-                }
-            }
-            else
-            {
-                for (int i = 0; i < points.Count; i++)
-                {
-                    shootCurve.AddPoint(shootCurve.CreatePointFromWorldPosition(points[i], BGCurvePoint.ControlTypeEnum.Absent));
-                }
+                shootLine.SetPosition(i, points[i]);
             }
 
             yield return null;
