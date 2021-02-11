@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
         SetupWalls();
         CalculateCellDiameter();
         CalculateMaxRowsCount();
+        SpawnInitGrid();
         initialized = true;
     }
 
@@ -82,7 +83,7 @@ public class GameManager : MonoBehaviour
     }
 
     [ContextMenu("Spawn init rows")]
-    private void SpawnRows()
+    private void SpawnInitGrid()
     {
         World.DefaultGameObjectInjectionWorld.GetExistingSystem<SpawnGridSystem>()
             .SpawnInitialBoard(spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, calculatedCellDiameter, this);

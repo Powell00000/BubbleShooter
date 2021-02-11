@@ -42,7 +42,8 @@ namespace Assets.Code.Bubbles.Mono
         {
             Collider[] overlappingCells = Physics.OverlapSphere(position, radius, LayerMask.GetMask("Cell"));
             var sortedCells = overlappingCells.OrderBy((cell) => (cell.transform.position - position).sqrMagnitude).ToArray();
-            return sortedCells[0].attachedRigidbody.GetComponent<Cell>();
+            Cell closestCell = sortedCells.Length > 0 && sortedCells[0] != null ? sortedCells[0].attachedRigidbody.GetComponent<Cell>() : null;
+            return closestCell;
         }
     }
 }

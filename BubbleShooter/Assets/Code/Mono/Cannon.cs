@@ -98,8 +98,7 @@ public class Cannon : MonoBehaviour
                     if (raycastHit.rigidbody.gameObject.name == "TopWall" || raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble"))
                     {
                         exitLoop = true;
-                        Cell cell = ShootingBubble.GetCellNearPosition(raycastHit.point + (currentRayDirection * -1), radius);
-                        cell.gizmos = true;
+                        //Cell cell = ShootingBubble.GetCellNearPosition(raycastHit.point + (currentRayDirection * -1), radius);
                     }
                 }
             }
