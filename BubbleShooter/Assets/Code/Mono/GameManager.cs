@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        IsEvenRow = true;
         InitializeCameraBounds();
         SetupWalls();
         CalculateCellDiameter();
@@ -67,6 +68,7 @@ public class GameManager : MonoBehaviour
         leftWall.position = cameraBounds.Left;
         rightWall.position = cameraBounds.Right;
         topWall.position = cameraBounds.Top;
+        spawnPosition.position = cameraBounds.Top;
     }
 
     [ContextMenu("Spawn 1 row")]

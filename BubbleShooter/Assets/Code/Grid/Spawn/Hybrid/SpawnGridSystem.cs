@@ -20,10 +20,11 @@ namespace Assets.Code.Grid.Spawn.Hybrid
         {
             for (int rowCount = 0; rowCount < GameManager.MaxRowsCount; rowCount++)
             {
+                gameManager.IsEvenRow = rowCount % 2 == 0;
+
                 float3 spawnPosition = position + new float3(0, -rowCount * cellDiameter, 0);
                 int cells = gameManager.IsEvenRow == true ? cellCount : cellCount - 1;
                 SpawnCellsInRow(gridCellPrefab, cellDiameter, spawnPosition, cells, rowCount);
-                gameManager.IsEvenRow = !gameManager.IsEvenRow;
             }
 
             var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();

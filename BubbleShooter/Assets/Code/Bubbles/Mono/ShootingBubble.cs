@@ -19,7 +19,7 @@ namespace Assets.Code.Bubbles.Mono
             float radius = GameManager.CellDiameter / 2;
             float extrapolatedDistance = (direction * Time.deltaTime * speed).magnitude;
 
-            if (Physics.SphereCast(transform.position, radius, direction, out var raycastHit, extrapolatedDistance))
+            if (Physics.SphereCast(transform.position, radius, direction, out var raycastHit, extrapolatedDistance, LayerMask.GetMask("Default", "Bubble")))
             {
                 //during next update we will hit a bubble, so we cast for cell to occupy
                 //or we will hit upper wall, and we also need to select a cell to occupy

@@ -3,7 +3,7 @@ using Unity.Entities;
 
 namespace Assets.Code.DOTS
 {
-    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
     internal class UnmarkAsSpawnedSystem : SystemBaseWithBarriers
     {
         protected override void OnUpdate()

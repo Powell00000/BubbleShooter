@@ -20,10 +20,11 @@ namespace Assets.Code.Grid.Spawn.Hybrid
             SpawnRowCmp spawnRowCmp = GetSingleton<SpawnRowCmp>();
             SpawnCellsInRow(gridCellPrefab, spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
+            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
 
-            beginSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());
-            beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
+            beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
+            endSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());
         }
     }
 }
