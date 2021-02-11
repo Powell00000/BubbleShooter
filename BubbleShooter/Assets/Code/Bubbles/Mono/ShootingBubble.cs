@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Assets.Code.Grid.Hybrid;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Code.Bubbles.Mono
@@ -24,12 +25,7 @@ namespace Assets.Code.Bubbles.Mono
                 //or we will hit upper wall, and we also need to select a cell to occupy
                 if (raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble") || raycastHit.rigidbody.gameObject.name == "TopWall")
                 {
-                    Collider[] overlappingCells = Physics.OverlapSphere(transform.position, radius, LayerMask.GetMask("Cell"));
-                    var sortedCells = overlappingCells.OrderBy((cell) => (cell.transform.position - transform.position).sqrMagnitude).ToArray();
-
-                    //spawn bubble and attach it to the cell
-                    //sortedCells[0].GetComponent<Cell>().Entity;
-
+                    GetCellNearPosition(transform.position, radius);
                     //destroy this bubble
                     Destroy(gameObject);
                 }
@@ -41,6 +37,12 @@ namespace Assets.Code.Bubbles.Mono
             }
             transform.position += direction * Time.deltaTime * speed;
 
+        }
+        public static Cell GetCellNearPosition(Vector3 position, float radius)
+        {
+            Collider[] overlappingCells = Physics.OverlapSphere(position, radius, LayerMask.GetMask("Cell"));
+            var sortedCells = overlappingCells.OrderBy((cell) => (cell.transform.position - position).sqrMagnitude).ToArray();
+            return sortedCells[0].attachedRigidbody.GetComponent<Cell>();
         }
     }
 }

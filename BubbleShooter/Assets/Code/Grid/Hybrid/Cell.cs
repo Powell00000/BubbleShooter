@@ -2,11 +2,13 @@
 using Assets.Code.Grid.Cells;
 using Assets.Code.Hybrid;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Assets.Code.Grid.Hybrid
 {
     internal class Cell : HybridMonoBase
     {
+        public bool gizmos = false;
         public void CreateAndSetupCellEntity(ICellData cellData)
         {
             CreateEntity();
@@ -18,6 +20,19 @@ namespace Assets.Code.Grid.Hybrid
             entityManager.AddComponentData(entity, new CopyTransformToGameObject());
             entityManager.AddComponentObject(Entity, transform);
             entityManager.AddComponentData(Entity, new SpawnBubbleCmp());
+        }
+
+        private void LateUpdate()
+        {
+            gizmos = false;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (gizmos)
+            {
+                Gizmos.DrawWireSphere(transform.position, 1);
+            }
         }
     }
 }
