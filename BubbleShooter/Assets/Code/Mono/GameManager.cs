@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     private static float calculatedCellDiameter;
     private static bool initialized = false;
+    private static int maxRowsCount;
 
     public static float CellDiameter => calculatedCellDiameter;
     public static bool Initialized => initialized;

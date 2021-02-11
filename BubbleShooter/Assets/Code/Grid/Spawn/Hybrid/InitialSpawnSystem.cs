@@ -20,12 +20,12 @@ namespace Assets.Code.Grid.Spawn.Hybrid
             {
                 float3 spawnPosition = position + new float3(0, -rowCount * cellDiameter, 0);
                 int cells = gameManager.IsEvenRow == true ? cellCount : cellCount - 1;
-                SpawnCellsInRow(gridCellPrefab, cellDiameter, spawnPosition, cells);
+                SpawnCellsInRow(gridCellPrefab, cellDiameter, spawnPosition, cells, rowCount);
                 gameManager.IsEvenRow = !gameManager.IsEvenRow;
             }
 
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
-            beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
+            beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
         }
     }
 }

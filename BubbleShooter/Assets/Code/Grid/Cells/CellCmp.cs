@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace Assets.Code.Grid
+namespace Assets.Code.Grid.Cells
 {
     [GenerateAuthoringComponent]
     public struct CellCmp : IComponentData
