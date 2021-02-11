@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Spawn init rows")]
     private void SpawnRows()
     {
-        World.DefaultGameObjectInjectionWorld.GetExistingSystem<InitialSpawnSystem>()
-            .SpawnInitialBoard(3, spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, calculatedCellDiameter, this);
+        World.DefaultGameObjectInjectionWorld.GetExistingSystem<SpawnGridSystem>()
+            .SpawnInitialBoard(spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, calculatedCellDiameter, this);
     }
 }

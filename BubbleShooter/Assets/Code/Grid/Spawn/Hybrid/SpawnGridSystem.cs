@@ -1,10 +1,12 @@
 ﻿using Assets.Code.DOTS;
 using Assets.Code.Grid.Hybrid;
+using Unity.Entities;
 using Unity.Mathematics;
 
 namespace Assets.Code.Grid.Spawn.Hybrid
 {
-    internal class InitialSpawnSystem : CellSpawnSystem
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    internal class SpawnGridSystem : CellSpawnSystem
     {
         [Zenject.Inject]
         private Cell gridCellPrefab;
@@ -14,9 +16,9 @@ namespace Assets.Code.Grid.Spawn.Hybrid
 
         }
 
-        public void SpawnInitialBoard(int rowsCount, float3 position, int cellCount, float cellDiameter, GameManager gameManager)
+        public void SpawnInitialBoard(float3 position, int cellCount, float cellDiameter, GameManager gameManager)
         {
-            for (int rowCount = 0; rowCount < rowsCount; rowCount++)
+            for (int rowCount = 0; rowCount < GameManager.MaxRowsCount; rowCount++)
             {
                 float3 spawnPosition = position + new float3(0, -rowCount * cellDiameter, 0);
                 int cells = gameManager.IsEvenRow == true ? cellCount : cellCount - 1;

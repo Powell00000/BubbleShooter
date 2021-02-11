@@ -19,7 +19,6 @@ namespace Assets.Code.Grid.Hybrid
             transform.localScale *= cellData.Diameter;
             entityManager.AddComponentData(entity, new CopyTransformToGameObject());
             entityManager.AddComponentObject(Entity, transform);
-            entityManager.AddComponentData(Entity, new SpawnBubbleCmp());
         }
 
         private void LateUpdate()
