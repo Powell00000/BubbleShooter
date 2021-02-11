@@ -16,7 +16,7 @@ namespace Assets.Code.Mono
         public Vector3 Right { get; protected set; }
         public Camera Cam => cam;
 
-        private void Start()
+        public void Initialize()
         {
             Top = cam.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height, ZFactor));
             Bottom = cam.ScreenToWorldPoint(new Vector3(Screen.width / 2, 0, ZFactor));

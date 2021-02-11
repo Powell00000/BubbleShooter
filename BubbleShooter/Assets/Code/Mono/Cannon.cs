@@ -15,10 +15,13 @@ public class Cannon : MonoBehaviour
     [Zenject.Inject]
     private CameraBounds cameraBounds;
 
+    [Zenject.Inject]
     private ShootingBubble shootingBubblePrefab;
 
     [SerializeField]
     private LineRenderer shootLine;
+
+    private bool spawnBubble;
 
     private void Start()
     {
@@ -27,9 +30,14 @@ public class Cannon : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Initialized == false)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
-
+            spawnBubble = true;
         }
     }
 
@@ -37,6 +45,12 @@ public class Cannon : MonoBehaviour
     {
         while (true)
         {
+            if (GameManager.Initialized == false)
+            {
+                yield return null;
+                continue;
+            }
+
             Vector3 mouseWorldPosition = cameraBounds.Cam.ScreenToWorldPoint(Input.mousePosition);
             Vector3 position = new Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 0);
 
@@ -50,12 +64,11 @@ public class Cannon : MonoBehaviour
             Quaternion clampedRotation = Quaternion.Euler(desiredRotation.eulerAngles.x, desiredRotation.eulerAngles.y, zAngle);
             pivot.rotation = clampedRotation;
 
-            Vector3 lookNormal = clampedRotation * Vector3.up;
-
-            Vector3 rayForward = lookNormal;
+            Vector3 cannonDirection = clampedRotation * Vector3.up;
             Vector3 rayStartPosition = shootPoint.position;
+            Vector3 currentRayDirection = cannonDirection;
 
-            Debug.DrawRay(rayStartPosition, rayForward * 20, Color.red);
+            Debug.DrawRay(rayStartPosition, cannonDirection * 20, Color.red);
 
             points.Add(rayStartPosition);
 
@@ -64,21 +77,18 @@ public class Cannon : MonoBehaviour
             bool exitLoop = false;
             while (!exitLoop)
             {
-                Ray ray = new Ray()
+                if (Physics.SphereCast(rayStartPosition, GameManager.CellDiameter / 2, currentRayDirection, out var raycastHit))
                 {
-                    direction = rayForward,
-                    origin = rayStartPosition
-                };
+                    Vector3 sphereContactPoint = raycastHit.point + raycastHit.normal * (GameManager.CellDiameter / 2);
 
-                if (Physics.Raycast(ray, out var raycastHit))
-                {
-                    rayForward = Vector3.Reflect(ray.direction, raycastHit.normal);
-                    rayStartPosition = raycastHit.point;
+                    currentRayDirection = Vector3.Reflect(currentRayDirection, raycastHit.normal);
+                    rayStartPosition = sphereContactPoint;
 
-                    Debug.DrawRay(rayStartPosition, rayForward * 20, Color.red);
-                    points.Add(raycastHit.point);
+                    Debug.DrawRay(rayStartPosition, currentRayDirection * 20, Color.red);
 
-                    if (raycastHit.rigidbody.gameObject.name == "TopWall")
+                    points.Add(sphereContactPoint);
+
+                    if (raycastHit.rigidbody.gameObject.name == "TopWall" || raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble"))
                     {
                         exitLoop = true;
                     }
@@ -93,6 +103,13 @@ public class Cannon : MonoBehaviour
             }
 
             yield return null;
+
+            if (spawnBubble)
+            {
+                ShootingBubble spawnedBubble = Instantiate(shootingBubblePrefab, shootPoint.position, Quaternion.identity, null);
+                spawnedBubble.SetDirection(cannonDirection);
+                spawnBubble = false;
+            }
         }
     }
 }
