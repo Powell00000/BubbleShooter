@@ -1,6 +1,5 @@
 using Assets.Code.Bubbles.Mono;
 using Assets.Code.Grid.Cells;
-using Assets.Code.Grid.Cells.Hybrid;
 using Assets.Code.Mono;
 using Assets.Code.PhysicsEx;
 using System.Collections;
@@ -85,7 +84,13 @@ public class Cannon : MonoBehaviour
             bool exitLoop = false;
             while (!exitLoop)
             {
-                bool cellFound = PhysicsEx.TryCastForCell(currentRayDirection, float.MaxValue, currentRayPosition, out var reflectedDirection, out var contactPosition, out var foundCell);
+                bool cellFound = PhysicsEx.TryCastForCell(
+                    currentRayDirection,
+                    float.MaxValue,
+                    currentRayPosition,
+                    out var reflectedDirection,
+                    out var contactPosition,
+                    out var foundCell);
 
                 currentRayPosition = contactPosition;
                 currentRayDirection = reflectedDirection;

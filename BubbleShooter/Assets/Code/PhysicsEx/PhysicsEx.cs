@@ -6,21 +6,21 @@ namespace Assets.Code.PhysicsEx
 {
     internal class PhysicsEx
     {
-        public static bool TryCastForCell(Vector3 initialDirection, float distance, Vector3 position, out Vector3 reflectedDirection, out Vector3 contactPoint, out Cell foundCell)
+        public static bool TryCastForCell(Vector3 direction, float distance, Vector3 position, out Vector3 reflectedDirection, out Vector3 contactPoint, out Cell foundCell)
         {
             foundCell = null;
-            reflectedDirection = initialDirection;
+            reflectedDirection = direction;
             contactPoint = Vector3.zero;
 
             float radius = GameManager.CellDiameter / 2;
-            radius *= 0.75f;
+            //radius *= 0.6f;
 
-            if (Physics.SphereCast(position, radius, initialDirection, out var raycastHit, distance, LayerMask.GetMask("Default", "Bubble")))
+            if (Physics.SphereCast(position, radius, direction, out var raycastHit, distance, LayerMask.GetMask("Default", "Bubble")))
             {
                 Vector3 sphereContactPoint = raycastHit.point + raycastHit.normal * radius;
                 contactPoint = sphereContactPoint;
 
-                reflectedDirection = Vector3.Reflect(initialDirection, raycastHit.normal);
+                reflectedDirection = Vector3.Reflect(direction, raycastHit.normal);
                 //during next update we will hit a bubble, so we cast for cell to occupy
                 //or we will hit upper wall, and we also need to select a cell to occupy
                 if (raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble") || raycastHit.rigidbody.gameObject.name == "TopWall")

@@ -6,6 +6,9 @@ namespace Assets.Code.Grid.Cells.Hybrid
 {
     internal class Cell : HybridMonoBase
     {
+        [SerializeField]
+        SphereCollider sphereCollider;
+
         public bool gizmos = false;
 
         [SerializeField]
@@ -22,6 +25,7 @@ namespace Assets.Code.Grid.Cells.Hybrid
 
         private void Update()
         {
+            //sphereCollider.radius = transform.localScale.x / 2;
             spriteRenderer.color = gizmos ? Color.green : Color.gray;
         }
     }

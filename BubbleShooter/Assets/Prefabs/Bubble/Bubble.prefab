@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d81d33facf7b2ab45988d4b69eee2352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sphereCollider: {fileID: 5243712725359536973}
   numberText: {fileID: 3123974992351505194}
 --- !u!54 &7598733969553825911
 Rigidbody:
@@ -147,3 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &5243712725359536973 stripped
+SphereCollider:
+  m_CorrespondingSourceObject: {fileID: 5963089462293386654, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
+  m_PrefabInstance: {fileID: 1874709885541646035}
+  m_PrefabAsset: {fileID: 0}
