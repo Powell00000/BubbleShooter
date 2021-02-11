@@ -1,5 +1,5 @@
 ﻿using Assets.Code.DOTS;
-using Assets.Code.Grid.Hybrid;
+using Assets.Code.Grid.Cells.Hybrid;
 using Unity.Entities;
 
 namespace Assets.Code.Grid.Destroy

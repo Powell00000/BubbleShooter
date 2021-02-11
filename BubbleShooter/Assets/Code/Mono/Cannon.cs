@@ -1,8 +1,11 @@
 using Assets.Code.Bubbles.Mono;
-using Assets.Code.Grid.Hybrid;
+using Assets.Code.Grid.Cells;
+using Assets.Code.Grid.Cells.Hybrid;
 using Assets.Code.Mono;
+using Assets.Code.PhysicsEx;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
 public class Cannon : MonoBehaviour
@@ -24,8 +27,9 @@ public class Cannon : MonoBehaviour
 
     private bool spawnBubble;
 
-    private void Start()
+    public void Initialize()
     {
+        transform.localScale *= GameManager.CellDiameter;
         StartCoroutine(ShootLineRoutine());
     }
 
@@ -71,40 +75,27 @@ public class Cannon : MonoBehaviour
             pivot.rotation = clampedRotation;
 
             Vector3 cannonDirection = clampedRotation * Vector3.up;
-            Vector3 rayStartPosition = shootPoint.position;
+            Vector3 currentRayPosition = shootPoint.position;
             Vector3 currentRayDirection = cannonDirection;
 
-            Debug.DrawRay(rayStartPosition, cannonDirection * 20, Color.red);
-
-            points.Add(rayStartPosition);
+            points.Add(currentRayPosition);
 
             yield return null;
 
             bool exitLoop = false;
             while (!exitLoop)
             {
-                float radius = GameManager.CellDiameter / 2;
-                if (Physics.SphereCast(rayStartPosition, radius, currentRayDirection, out var raycastHit, 200, LayerMask.GetMask("Default", "Bubble")))
+                bool cellFound = PhysicsEx.TryCastForCell(currentRayDirection, float.MaxValue, currentRayPosition, out var reflectedDirection, out var contactPosition, out var foundCell);
+
+                currentRayPosition = contactPosition;
+                currentRayDirection = reflectedDirection;
+
+                if (cellFound)
                 {
-                    Vector3 sphereContactPoint = raycastHit.point + raycastHit.normal * radius;
-
-                    currentRayDirection = Vector3.Reflect(currentRayDirection, raycastHit.normal);
-                    rayStartPosition = sphereContactPoint;
-
-                    Debug.DrawRay(rayStartPosition, currentRayDirection * 20, Color.red);
-
-                    points.Add(sphereContactPoint);
-
-                    if (raycastHit.rigidbody.gameObject.name == "TopWall" || raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble"))
-                    {
-                        exitLoop = true;
-                        Cell cell = ShootingBubble.GetCellNearPosition(raycastHit.point + (currentRayDirection * -1), radius);
-                        if (cell)
-                        {
-                            cell.gizmos = true;
-                        }
-                    }
+                    exitLoop = true;
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(foundCell.Entity, new MarkAsSelectedCmp());
                 }
+                points.Add(currentRayPosition);
             }
 
             shootLine.positionCount = points.Count;
@@ -112,6 +103,11 @@ public class Cannon : MonoBehaviour
             for (int i = 0; i < points.Count; i++)
             {
                 shootLine.SetPosition(i, points[i]);
+
+                if (i + 1 < points.Count)
+                {
+                    Debug.DrawLine(points[i], points[i + 1], Color.red);
+                }
             }
 
             yield return null;
@@ -119,6 +115,7 @@ public class Cannon : MonoBehaviour
             if (spawnBubble)
             {
                 ShootingBubble spawnedBubble = Instantiate(shootingBubblePrefab, shootPoint.position, Quaternion.identity, null);
+                spawnedBubble.transform.localScale = Vector3.one * GameManager.CellDiameter;
                 spawnedBubble.SetDirection(cannonDirection);
                 spawnBubble = false;
             }

@@ -1,4 +1,5 @@
-﻿using Assets.Code.Grid.Spawn;
+﻿using Assets.Code.Bubbles;
+using Assets.Code.Grid.Spawn;
 using Unity.Entities;
 
 namespace Assets.Code.DOTS
@@ -13,6 +14,11 @@ namespace Assets.Code.DOTS
         public static ComponentType[] VisualsInProgress => new ComponentType[]
         {
             ComponentType.ReadOnly<Visuals.VisualsInProgressTagCmp>(),
+        };
+
+        public static ComponentType[] PopulateRowWithBubbles => new ComponentType[]
+        {
+            ComponentType.ReadOnly<PopulateRowWithBubbles>(),
         };
     }
 }
