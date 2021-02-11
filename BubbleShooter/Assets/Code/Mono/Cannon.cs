@@ -1,4 +1,5 @@
 using Assets.Code.Bubbles.Mono;
+using Assets.Code.Grid.Hybrid;
 using Assets.Code.Mono;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,6 +51,11 @@ public class Cannon : MonoBehaviour
                 yield return null;
                 continue;
             }
+            //if (!Input.GetMouseButton(1))
+            //{
+            //    yield return null;
+            //    continue;
+            //}
 
             Vector3 mouseWorldPosition = cameraBounds.Cam.ScreenToWorldPoint(Input.mousePosition);
             Vector3 position = new Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 0);
@@ -77,9 +83,10 @@ public class Cannon : MonoBehaviour
             bool exitLoop = false;
             while (!exitLoop)
             {
-                if (Physics.SphereCast(rayStartPosition, GameManager.CellDiameter / 2, currentRayDirection, out var raycastHit))
+                float radius = GameManager.CellDiameter / 2;
+                if (Physics.SphereCast(rayStartPosition, radius, currentRayDirection, out var raycastHit, 200, LayerMask.GetMask("Default", "Bubble")))
                 {
-                    Vector3 sphereContactPoint = raycastHit.point + raycastHit.normal * (GameManager.CellDiameter / 2);
+                    Vector3 sphereContactPoint = raycastHit.point + raycastHit.normal * radius;
 
                     currentRayDirection = Vector3.Reflect(currentRayDirection, raycastHit.normal);
                     rayStartPosition = sphereContactPoint;
@@ -91,6 +98,11 @@ public class Cannon : MonoBehaviour
                     if (raycastHit.rigidbody.gameObject.name == "TopWall" || raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble"))
                     {
                         exitLoop = true;
+                        Cell cell = ShootingBubble.GetCellNearPosition(raycastHit.point + (currentRayDirection * -1), radius);
+                        if (cell)
+                        {
+                            cell.gizmos = true;
+                        }
                     }
                 }
             }

@@ -1,11 +1,12 @@
-﻿using Unity.Mathematics;
+﻿using Assets.Code.Grid.Cells;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Assets.Code.Grid
 {
     internal class GridEx
     {
-        public static T[] GetCellsPositionsInARow<T>(float cellDiameter, float3 startingCenteredPosition, int numberOfCells) where T : ICellData, new()
+        public static T[] GetCellsPositionsInARow<T>(float cellDiameter, float3 startingCenteredPosition, int numberOfCells, int rowNumber) where T : ICellData, new()
         {
             float radius = cellDiameter / 2;
 
@@ -26,7 +27,8 @@ namespace Assets.Code.Grid
                 cellRow[cellNumber] = new T
                 {
                     Position = startingCellPosition + diameterShiftRight * cellNumber,
-                    Diameter = cellDiameter
+                    Diameter = cellDiameter,
+                    Row = rowNumber
                 };
             }
 

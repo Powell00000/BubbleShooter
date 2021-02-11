@@ -21,5 +21,10 @@ namespace Assets.Code.Hybrid
             entityManager.AddComponentData(entity, new JustSpawnedTagCmp());
             entityManager.AddComponentObject(Entity, this);
         }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
     }
 }

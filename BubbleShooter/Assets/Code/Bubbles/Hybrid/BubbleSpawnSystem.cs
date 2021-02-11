@@ -1,4 +1,4 @@
-﻿using Assets.Code.Grid;
+﻿using Assets.Code.Grid.Cells;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Hybrid

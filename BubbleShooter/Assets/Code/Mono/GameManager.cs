@@ -28,21 +28,34 @@ public class GameManager : MonoBehaviour
 
     private static float calculatedCellDiameter;
     private static bool initialized = false;
+    private static int maxRowsCount;
 
     public static float CellDiameter => calculatedCellDiameter;
     public static bool Initialized => initialized;
+    public static int MaxRowsCount => maxRowsCount;
 
     private void Start()
     {
+        IsEvenRow = true;
         InitializeCameraBounds();
         SetupWalls();
         CalculateCellDiameter();
+        CalculateMaxRowsCount();
+        SpawnInitGrid();
         initialized = true;
     }
 
     private void CalculateCellDiameter()
     {
         calculatedCellDiameter = (cameraBounds.Right.x - cameraBounds.Left.x) / gameSettings.NumberOfCellsInEvenRow;
+    }
+
+    private void CalculateMaxRowsCount()
+    {
+        float height = Vector3.Distance(cameraBounds.Top, cameraBounds.Bottom);
+        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter);
+
+        Debug.Log($"{nameof(maxRowsCount)} = {maxRowsCount}");
     }
 
     private void InitializeCameraBounds()
@@ -55,6 +68,7 @@ public class GameManager : MonoBehaviour
         leftWall.position = cameraBounds.Left;
         rightWall.position = cameraBounds.Right;
         topWall.position = cameraBounds.Top;
+        spawnPosition.position = cameraBounds.Top;
     }
 
     [ContextMenu("Spawn 1 row")]
@@ -71,9 +85,9 @@ public class GameManager : MonoBehaviour
     }
 
     [ContextMenu("Spawn init rows")]
-    private void SpawnRows()
+    private void SpawnInitGrid()
     {
-        World.DefaultGameObjectInjectionWorld.GetExistingSystem<InitialSpawnSystem>()
-            .SpawnInitialBoard(3, spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, calculatedCellDiameter, this);
+        World.DefaultGameObjectInjectionWorld.GetExistingSystem<SpawnGridSystem>()
+            .SpawnInitialBoard(spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, calculatedCellDiameter, this);
     }
 }
