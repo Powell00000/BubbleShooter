@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 3498086059245855782, guid: f639197722522e840bfb2a2ecb23bf0c, type: 3}
   bubblePrefab: {fileID: 5050359115293275984, guid: e7c2c92b056b9844ca2f5c00d47bfb92, type: 3}
+  shootingBubble: {fileID: 7433689832827265870, guid: 70963e737722af840b44df287a8c7328, type: 3}
