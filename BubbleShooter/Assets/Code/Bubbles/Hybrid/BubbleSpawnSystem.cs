@@ -1,7 +1,7 @@
 ﻿using Assets.Code.Bubbles.Solving;
 using Assets.Code.Grid.Cells;
-using System;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Assets.Code.Bubbles.Hybrid
