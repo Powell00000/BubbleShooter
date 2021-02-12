@@ -1,5 +1,5 @@
 ﻿using Assets.Code.Grid.Cells;
-using Assets.Code.Grid.Hybrid;
+using Assets.Code.Grid.Cells.Hybrid;
 using Unity.Mathematics;
 
 namespace Assets.Code.Grid.Spawn.Hybrid

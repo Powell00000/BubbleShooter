@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Grid.Cells;
 using Unity.Entities;
+using Unity.Transforms;
 
 namespace Assets.Code.Bubbles.Hybrid
 {
@@ -15,12 +16,12 @@ namespace Assets.Code.Bubbles.Hybrid
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
-                .WithAll<CellCmp, SpawnBubbleCmp>()
-                .ForEach((Entity e) =>
+                .WithAll<CellCmp, SpawnBubbleTagCmp>()
+                .ForEach((Entity e, in Scale scaleCmp) =>
                 {
                     var bubble = UnityEngine.Object.Instantiate(bubblePrefab).GetComponent<Bubble>();
-                    bubble.CreateAndSetupBubbleEntity(e);
-                    beginSimBuffer.RemoveComponent<SpawnBubbleCmp>(e);
+                    bubble.CreateAndSetupBubbleEntity(e, scaleCmp);
+                    beginSimBuffer.RemoveComponent<SpawnBubbleTagCmp>(e);
                 })
                 .Run();
 

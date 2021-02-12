@@ -9,18 +9,26 @@ namespace Assets.Code.Bubbles.Hybrid
     internal class Bubble : HybridMonoBase
     {
         [SerializeField]
+        SphereCollider sphereCollider;
+
+        [SerializeField]
         private TMPro.TMP_Text numberText;
 
-        public void CreateAndSetupBubbleEntity(Entity entityToFollow)
+        public void CreateAndSetupBubbleEntity(Entity entityToFollow, Scale scale)
         {
             CreateEntity();
             entityManager.AddComponentData(entity, new BubbleCmp());
             entityManager.AddComponentData(entity, new NumberCmp());
             entityManager.AddComponentData(entity, new FollowEntityCmp { EntityToFollow = entityToFollow });
-            entityManager.AddComponentData(entity, new CopyTransformToGameObject());
+            entityManager.SetComponentData(entity, scale);
             entityManager.AddComponentObject(entity, transform);
 
             entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
+        }
+
+        private void Update()
+        {
+            //sphereCollider.radius = transform.localScale.x / 2;
         }
 
         public void RefreshNumber(int number)

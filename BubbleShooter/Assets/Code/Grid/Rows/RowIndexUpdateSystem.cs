@@ -1,9 +1,7 @@
-﻿
-using Assets.Code.DOTS;
+﻿using Assets.Code.DOTS;
 using Assets.Code.Grid.Row;
 using Assets.Code.Grid.Spawn;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Assets.Code.Grid.Rows
 {
@@ -13,20 +11,11 @@ namespace Assets.Code.Grid.Rows
         protected override void OnCreate()
         {
             base.OnCreate();
-            //RequireSingletonForUpdate<RowSpawnedTagCmp>();
+            RequireSingletonForUpdate<RowSpawnedTagCmp>();
         }
 
         protected override void OnUpdate()
         {
-            if (HasSingleton<RowSpawnedTagCmp>())
-            {
-                Debug.Log("rowSpawned");
-            }
-            else
-            {
-                return;
-            }
-
             var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             Entities
@@ -35,7 +24,7 @@ namespace Assets.Code.Grid.Rows
                 .ForEach((Entity e, RowSharedCmp rowCmp) =>
                 {
                     rowCmp.RowNumber++;
-                    if (rowCmp.RowNumber >= rowCmp.MaxRowNumber)
+                    if (rowCmp.RowNumber >= GameManager.MaxRowsCount)
                     {
                         beginInitBuffer.AddComponent(e, new DestroyTagCmp());
                     }

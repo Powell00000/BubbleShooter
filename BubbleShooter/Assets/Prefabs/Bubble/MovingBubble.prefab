@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b8e9a53b8a5584d85ef4699b4f20df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sphereCollider: {fileID: 4696400185092697259}
 --- !u!54 &2272547746791273465
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -124,6 +125,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5963089462293386654, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6320452856423658910, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -133,5 +138,10 @@ PrefabInstance:
 --- !u!4 &4223152258913542841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2987707116178250636, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
+  m_PrefabInstance: {fileID: 1436033999210821941}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &4696400185092697259 stripped
+SphereCollider:
+  m_CorrespondingSourceObject: {fileID: 5963089462293386654, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
   m_PrefabInstance: {fileID: 1436033999210821941}
   m_PrefabAsset: {fileID: 0}

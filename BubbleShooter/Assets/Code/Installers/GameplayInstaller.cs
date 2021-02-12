@@ -9,9 +9,13 @@ namespace Assets.Code.Installers
         [SerializeField]
         private CameraBounds cameraBounds;
 
+        [SerializeField]
+        private Cannon cannon;
+
         public override void InstallBindings()
         {
             Container.Bind<CameraBounds>().FromInstance(cameraBounds);
+            Container.Bind<Cannon>().FromInstance(cannon);
         }
     }
 }

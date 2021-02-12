@@ -1,13 +1,23 @@
-﻿using Assets.Code.Grid.Hybrid;
-using System.Linq;
+﻿using Assets.Code.DOTS;
+using Unity.Entities;
 using UnityEngine;
+using static Assets.Code.Physics.PhysicsEx;
 
 namespace Assets.Code.Bubbles.Mono
 {
     internal class ShootingBubble : MonoBehaviour
     {
+        [SerializeField]
+        private SphereCollider sphereCollider;
+
         private Vector3 direction;
         private float speed = 10;
+        private Entity bubbleIsShootingTagEntity;
+
+        private void Awake()
+        {
+            bubbleIsShootingTagEntity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity(Archetypes.BubbleIsShooting);
+        }
 
         public void SetDirection(Vector3 direction)
         {
@@ -16,34 +26,37 @@ namespace Assets.Code.Bubbles.Mono
 
         private void Update()
         {
-            float radius = GameManager.CellDiameter / 2;
             float extrapolatedDistance = (direction * Time.deltaTime * speed).magnitude;
+            Vector3 extrapolatedPosition = transform.position + direction * extrapolatedDistance;
 
-            if (Physics.SphereCast(transform.position, radius, direction, out var raycastHit, extrapolatedDistance, LayerMask.GetMask("Default", "Bubble")))
+            CastResult castResult = Cast(direction, extrapolatedDistance, transform.position);
+
+            if (castResult.SomethingHit)
             {
-                //during next update we will hit a bubble, so we cast for cell to occupy
-                //or we will hit upper wall, and we also need to select a cell to occupy
-                if (raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble") || raycastHit.rigidbody.gameObject.name == "TopWall")
+                direction = castResult.ReflectedDirection;
+
+                if (castResult.FoundCell != null)
                 {
-                    GetCellNearPosition(transform.position, radius);
-                    //destroy this bubble
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(castResult.FoundCell.Entity, new SpawnBubbleTagCmp());
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(bubbleIsShootingTagEntity, new DestroyTagCmp());
+
                     Destroy(gameObject);
+                }
+
+
+                if (extrapolatedDistance > Vector3.Distance(transform.position, castResult.ContactPoint))
+                {
+                    transform.position = castResult.ContactPoint;
                 }
                 else
                 {
-                    Vector3 sphereContactPoint = raycastHit.point + raycastHit.normal * (radius / 2);
-                    direction = Vector3.Reflect(direction, raycastHit.normal);
+                    transform.position = extrapolatedPosition;
                 }
             }
-            transform.position += direction * Time.deltaTime * speed;
-
-        }
-        public static Cell GetCellNearPosition(Vector3 position, float radius)
-        {
-            Collider[] overlappingCells = Physics.OverlapSphere(position, radius, LayerMask.GetMask("Cell"));
-            var sortedCells = overlappingCells.OrderBy((cell) => (cell.transform.position - position).sqrMagnitude).ToArray();
-            Cell closestCell = sortedCells.Length > 0 && sortedCells[0] != null ? sortedCells[0].attachedRigidbody.GetComponent<Cell>() : null;
-            return closestCell;
+            else
+            {
+                transform.position = extrapolatedPosition;
+            }
         }
     }
 }

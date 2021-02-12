@@ -1,3 +1,4 @@
+using Assets.Code.Bubbles;
 using Assets.Code.Grid.Spawn;
 using Assets.Code.Grid.Spawn.Hybrid;
 using Assets.Code.Mono;
@@ -19,6 +20,9 @@ public class GameManager : MonoBehaviour
     private Transform topWall;
 
     [Zenject.Inject]
+    private Cannon cannon;
+
+    [Zenject.Inject]
     private GameSettings gameSettings;
 
     [Zenject.Inject]
@@ -36,13 +40,21 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         IsEvenRow = true;
         InitializeCameraBounds();
         SetupWalls();
         CalculateCellDiameter();
         CalculateMaxRowsCount();
         SpawnInitGrid();
+        SpawnInitBubbles();
+        InitializeCannon();
         initialized = true;
+    }
+
+    private void InitializeCannon()
+    {
+        cannon.Initialize();
     }
 
     private void CalculateCellDiameter()
@@ -89,5 +101,15 @@ public class GameManager : MonoBehaviour
     {
         World.DefaultGameObjectInjectionWorld.GetExistingSystem<SpawnGridSystem>()
             .SpawnInitialBoard(spawnPosition.position, gameSettings.NumberOfCellsInEvenRow, calculatedCellDiameter, this);
+    }
+
+    [ContextMenu("Spawn init bubbles")]
+    private void SpawnInitBubbles()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
+            World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new PopulateRowWithBubbles { Row = i });
+        }
     }
 }

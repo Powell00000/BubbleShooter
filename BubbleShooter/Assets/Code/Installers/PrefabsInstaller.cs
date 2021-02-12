@@ -1,6 +1,6 @@
 ﻿using Assets.Code.Bubbles.Hybrid;
 using Assets.Code.Bubbles.Mono;
-using Assets.Code.Grid.Hybrid;
+using Assets.Code.Grid.Cells.Hybrid;
 using UnityEngine;
 using Zenject;
 
