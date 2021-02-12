@@ -1,10 +1,8 @@
 using Assets.Code.Bubbles.Mono;
-using Assets.Code.Grid.Cells;
 using Assets.Code.Mono;
 using Assets.Code.Physics;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Entities;
 using UnityEngine;
 using static Assets.Code.Physics.PhysicsEx;
 
@@ -28,11 +26,20 @@ public class Cannon : MonoBehaviour
     [SerializeField]
     private SpriteRenderer circle;
 
+    [SerializeField]
+    private TMPro.TMP_Text nextNumberText;
+
+    private int nextNumber;
+
+    private GameManager gameManager;
+
     private bool spawnBubble;
 
-    public void Initialize()
+    public void Initialize(GameManager gameManager)
     {
         transform.localScale *= GameManager.CellDiameter;
+        this.gameManager = gameManager;
+        PreloadNextNumber();
         StartCoroutine(ShootLineRoutine());
     }
 
@@ -116,9 +123,18 @@ public class Cannon : MonoBehaviour
             {
                 ShootingBubble spawnedBubble = Instantiate(shootingBubblePrefab, shootPoint.position, Quaternion.identity, null);
                 spawnedBubble.transform.localScale = Vector3.one * GameManager.CellDiameter;
+                spawnedBubble.SetNumber(nextNumber);
                 spawnedBubble.SetDirection(cannonDirection);
                 spawnBubble = false;
+
+                PreloadNextNumber();
             }
         }
+    }
+
+    private void PreloadNextNumber()
+    {
+        nextNumber = gameManager.GetRandomBubbleNumber();
+        nextNumberText.text = nextNumber.ToString();
     }
 }

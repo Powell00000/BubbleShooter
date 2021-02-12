@@ -9,10 +9,14 @@ namespace Assets.Code.Bubbles.Hybrid
     internal class Bubble : HybridMonoBase
     {
         [SerializeField]
-        SphereCollider sphereCollider;
+        private SphereCollider sphereCollider;
 
         [SerializeField]
         private TMPro.TMP_Text numberText;
+
+        private int number;
+
+        public int Number => number;
 
         public void CreateAndSetupBubbleEntity(Entity entityToFollow, Scale scale)
         {
@@ -26,13 +30,9 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
         }
 
-        private void Update()
-        {
-            //sphereCollider.radius = transform.localScale.x / 2;
-        }
-
         public void RefreshNumber(int number)
         {
+            this.number = number;
             numberText.text = number.ToString();
         }
     }

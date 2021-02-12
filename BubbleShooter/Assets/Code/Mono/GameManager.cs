@@ -3,6 +3,7 @@ using Assets.Code.Grid.Spawn;
 using Assets.Code.Grid.Spawn.Hybrid;
 using Assets.Code.Mono;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -28,6 +29,8 @@ public class GameManager : MonoBehaviour
     [Zenject.Inject]
     private CameraBounds cameraBounds;
 
+    private Unity.Mathematics.Random random;
+
     public bool IsEvenRow { get; set; }
 
     private static float calculatedCellDiameter;
@@ -40,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        random = new Unity.Mathematics.Random(2);
         Application.targetFrameRate = 60;
         IsEvenRow = true;
         InitializeCameraBounds();
@@ -52,9 +56,14 @@ public class GameManager : MonoBehaviour
         initialized = true;
     }
 
+    public int GetRandomBubbleNumber()
+    {
+        return (int)math.pow(2, random.NextInt(1, 4));
+    }
+
     private void InitializeCannon()
     {
-        cannon.Initialize();
+        cannon.Initialize(this);
     }
 
     private void CalculateCellDiameter()
@@ -109,7 +118,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new PopulateRowWithBubbles { Row = i });
+            World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new PopulateRowWithBubbles { Row = i, RandomizeNumbers = true });
         }
     }
 }

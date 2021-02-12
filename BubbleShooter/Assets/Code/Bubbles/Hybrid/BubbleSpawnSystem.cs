@@ -1,5 +1,7 @@
-﻿using Assets.Code.Grid.Cells;
+﻿using Assets.Code.Bubbles.Solving;
+using Assets.Code.Grid.Cells;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Assets.Code.Bubbles.Hybrid
@@ -10,22 +12,37 @@ namespace Assets.Code.Bubbles.Hybrid
         [Zenject.Inject]
         private Bubble bubblePrefab;
 
+        [Zenject.Inject]
+        private GameManager gameManager;
+
         protected override void OnUpdate()
         {
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
-                .WithAll<CellCmp, SpawnBubbleTagCmp>()
-                .ForEach((Entity e, in Scale scaleCmp) =>
+                .WithAll<CellCmp>()
+                .ForEach((Entity e, in Scale scaleCmp, in SpawnBubbleCmp spawnBubbleCmp, in Translation translation) =>
                 {
-                    var bubble = UnityEngine.Object.Instantiate(bubblePrefab).GetComponent<Bubble>();
+                    var bubble = UnityEngine.Object.Instantiate(bubblePrefab, translation.Value, quaternion.identity).GetComponent<Bubble>();
                     bubble.CreateAndSetupBubbleEntity(e, scaleCmp);
-                    beginSimBuffer.RemoveComponent<SpawnBubbleTagCmp>(e);
+
+                    if (spawnBubbleCmp.SolveHere)
+                    {
+                        EntityManager.AddComponentData(bubble.Entity, new SolveHereTagCmp());
+                    }
+
+                    if (spawnBubbleCmp.RandomizeNumber)
+                    {
+                        EntityManager.SetComponentData(bubble.Entity, new NumberCmp { Value = gameManager.GetRandomBubbleNumber() });
+                    }
+                    else
+                    {
+                        EntityManager.SetComponentData(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
+                    }
+
+                    EntityManager.RemoveComponent<SpawnBubbleCmp>(e);
                 })
                 .Run();
-
-            beginSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

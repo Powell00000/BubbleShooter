@@ -2,6 +2,7 @@
 
 namespace Assets.Code.Bubbles.Hybrid
 {
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     internal class RefreshNumberSystem : SystemBase
     {
         protected override void OnUpdate()
