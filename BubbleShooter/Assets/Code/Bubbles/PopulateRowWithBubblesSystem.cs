@@ -29,7 +29,7 @@ namespace Assets.Code.Bubbles
                 .WithSharedComponentFilter(new RowSharedCmp { RowNumber = row })
                 .ForEach((Entity e) =>
                 {
-                    ecb.AddComponent(e, new SpawnBubbleTagCmp());
+                    ecb.AddComponent(e, new SpawnBubbleCmp());
                 })
                 .Schedule();
         }

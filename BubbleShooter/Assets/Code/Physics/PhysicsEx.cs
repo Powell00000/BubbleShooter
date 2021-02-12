@@ -1,4 +1,6 @@
-﻿using Assets.Code.Grid.Cells.Hybrid;
+﻿using Assets.Code.Bubbles.Hybrid;
+using Assets.Code.Grid.Cells.Hybrid;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -32,19 +34,30 @@ namespace Assets.Code.Physics
                 //or we will hit upper wall, and we also need to select a cell to occupy
                 if (raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble") || raycastHit.rigidbody.gameObject.name == "TopWall")
                 {
-                    Cell cell = GetCellNearPosition(castResult.ContactPoint, radius);
+                    Cell cell = GetClosestCell(castResult.ContactPoint, radius);
                     castResult.FoundCell = cell;
                 }
             }
             return castResult;
         }
 
-        public static Cell GetCellNearPosition(Vector3 position, float radius)
+        public static Cell GetClosestCell(Vector3 position, float radius)
         {
             Collider[] overlappingCells = UnityEngine.Physics.OverlapSphere(position, radius, LayerMask.GetMask("Cell"));
             var sortedCells = overlappingCells.OrderBy((cell) => (cell.transform.position - position).sqrMagnitude).ToArray();
             Cell closestCell = sortedCells.Length > 0 && sortedCells[0] != null ? sortedCells[0].attachedRigidbody.GetComponent<Cell>() : null;
             return closestCell;
+        }
+
+        public static Bubble[] GetNeighbouringBubbles(Vector3 position)
+        {
+            Collider[] overlappingCells = UnityEngine.Physics.OverlapSphere(position, GameManager.CellDiameter * 2, LayerMask.GetMask("Bubble"));
+            List<Bubble> bubbles = new List<Bubble>(overlappingCells.Length);
+            for (int i = 0; i < overlappingCells.Length; i++)
+            {
+                bubbles.Add(overlappingCells[i].attachedRigidbody.GetComponent<Bubble>());
+            }
+            return bubbles.ToArray();
         }
     }
 }

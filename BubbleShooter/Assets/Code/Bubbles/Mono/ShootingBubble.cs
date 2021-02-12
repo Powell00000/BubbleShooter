@@ -37,7 +37,7 @@ namespace Assets.Code.Bubbles.Mono
 
                 if (castResult.FoundCell != null)
                 {
-                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(castResult.FoundCell.Entity, new SpawnBubbleTagCmp());
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(castResult.FoundCell.Entity, new SpawnBubbleCmp() { SolveHere = true });
                     World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(bubbleIsShootingTagEntity, new DestroyTagCmp());
 
                     Destroy(gameObject);
