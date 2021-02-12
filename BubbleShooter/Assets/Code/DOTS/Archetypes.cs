@@ -20,5 +20,10 @@ namespace Assets.Code.DOTS
         {
             ComponentType.ReadOnly<PopulateRowWithBubbles>(),
         };
+
+        public static ComponentType[] BubbleIsShooting => new ComponentType[]
+        {
+            ComponentType.ReadOnly<BubbleIsShootingTagCmp>(),
+        };
     }
 }

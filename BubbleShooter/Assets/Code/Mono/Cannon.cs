@@ -1,11 +1,12 @@
 using Assets.Code.Bubbles.Mono;
 using Assets.Code.Grid.Cells;
 using Assets.Code.Mono;
-using Assets.Code.PhysicsEx;
+using Assets.Code.Physics;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using static Assets.Code.Physics.PhysicsEx;
 
 public class Cannon : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class Cannon : MonoBehaviour
     [SerializeField]
     private LineRenderer shootLine;
 
+    [SerializeField]
+    private SpriteRenderer circle;
+
     private bool spawnBubble;
 
     public void Initialize()
@@ -32,17 +36,9 @@ public class Cannon : MonoBehaviour
         StartCoroutine(ShootLineRoutine());
     }
 
-    private void Update()
+    public void ShootBubble()
     {
-        if (GameManager.Initialized == false)
-        {
-            return;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            spawnBubble = true;
-        }
+        spawnBubble = true;
     }
 
     private IEnumerator ShootLineRoutine()
@@ -84,23 +80,22 @@ public class Cannon : MonoBehaviour
             bool exitLoop = false;
             while (!exitLoop)
             {
-                bool cellFound = PhysicsEx.TryCastForCell(
-                    currentRayDirection,
-                    float.MaxValue,
-                    currentRayPosition,
-                    out var reflectedDirection,
-                    out var contactPosition,
-                    out var foundCell);
+                CastResult castResult = PhysicsEx.Cast(currentRayDirection, float.MaxValue, currentRayPosition);
 
-                currentRayPosition = contactPosition;
-                currentRayDirection = reflectedDirection;
-
-                if (cellFound)
+                if (castResult.SomethingHit)
                 {
-                    exitLoop = true;
-                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(foundCell.Entity, new MarkAsSelectedCmp());
+                    currentRayPosition = castResult.ContactPoint;
+                    currentRayDirection = castResult.ReflectedDirection;
+
+                    if (castResult.FoundCell != null)
+                    {
+                        exitLoop = true;
+                        circle.transform.position = castResult.FoundCell.transform.position;
+                        circle.transform.localScale = Vector3.one * GameManager.CellDiameter;
+                    }
+                    points.Add(currentRayPosition);
                 }
-                points.Add(currentRayPosition);
+
             }
 
             shootLine.positionCount = points.Count;

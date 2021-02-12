@@ -1,4 +1,5 @@
-﻿using Assets.Code.DOTS;
+﻿using Assets.Code.Bubbles;
+using Assets.Code.DOTS;
 using Assets.Code.Movement;
 using Unity.Entities;
 
@@ -11,6 +12,7 @@ namespace Assets.Code.Visuals
             Any = new ComponentType[]
             {
                 typeof(MoveDownCmp),
+                typeof(BubbleIsShootingTagCmp)
             }
         };
         private EntityQuery visualsQuery;

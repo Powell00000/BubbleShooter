@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Transform topWall;
 
-    [SerializeField]
+    [Zenject.Inject]
     private Cannon cannon;
 
     [Zenject.Inject]
@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         IsEvenRow = true;
         InitializeCameraBounds();
         SetupWalls();

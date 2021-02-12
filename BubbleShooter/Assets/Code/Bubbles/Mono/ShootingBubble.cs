@@ -1,15 +1,23 @@
-﻿using Unity.Entities;
+﻿using Assets.Code.DOTS;
+using Unity.Entities;
 using UnityEngine;
+using static Assets.Code.Physics.PhysicsEx;
 
 namespace Assets.Code.Bubbles.Mono
 {
     internal class ShootingBubble : MonoBehaviour
     {
         [SerializeField]
-        SphereCollider sphereCollider;
+        private SphereCollider sphereCollider;
 
         private Vector3 direction;
         private float speed = 10;
+        private Entity bubbleIsShootingTagEntity;
+
+        private void Awake()
+        {
+            bubbleIsShootingTagEntity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity(Archetypes.BubbleIsShooting);
+        }
 
         public void SetDirection(Vector3 direction)
         {
@@ -18,18 +26,37 @@ namespace Assets.Code.Bubbles.Mono
 
         private void Update()
         {
-            //sphereCollider.radius = transform.localScale.x / 2;
-        }
-
-        private void FixedUpdate()
-        {
             float extrapolatedDistance = (direction * Time.deltaTime * speed).magnitude;
-            if (PhysicsEx.PhysicsEx.TryCastForCell(direction, extrapolatedDistance, transform.position, out direction, out var contactPoint, out var foundCell))
+            Vector3 extrapolatedPosition = transform.position + direction * extrapolatedDistance;
+
+            CastResult castResult = Cast(direction, extrapolatedDistance, transform.position);
+
+            if (castResult.SomethingHit)
             {
-                World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(foundCell.Entity, new SpawnBubbleTagCmp());
-                Destroy(gameObject);
+                direction = castResult.ReflectedDirection;
+
+                if (castResult.FoundCell != null)
+                {
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(castResult.FoundCell.Entity, new SpawnBubbleTagCmp());
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(bubbleIsShootingTagEntity, new DestroyTagCmp());
+
+                    Destroy(gameObject);
+                }
+
+
+                if (extrapolatedDistance > Vector3.Distance(transform.position, castResult.ContactPoint))
+                {
+                    transform.position = castResult.ContactPoint;
+                }
+                else
+                {
+                    transform.position = extrapolatedPosition;
+                }
             }
-            transform.position += direction * Time.deltaTime * speed;
+            else
+            {
+                transform.position = extrapolatedPosition;
+            }
         }
     }
 }
