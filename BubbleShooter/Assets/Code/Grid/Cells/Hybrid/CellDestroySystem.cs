@@ -1,8 +1,7 @@
 ﻿using Assets.Code.DOTS;
-using Assets.Code.Grid.Cells.Hybrid;
 using Unity.Entities;
 
-namespace Assets.Code.Grid.Destroy
+namespace Assets.Code.Grid.Cells.Hybrid
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     internal class CellDestroySystem : SystemBase

@@ -12,13 +12,8 @@ namespace Assets.Code.Bubbles.Hybrid
         [Zenject.Inject]
         private Bubble bubblePrefab;
 
-        private Random random;
-
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-            random = new Random(2);
-        }
+        [Zenject.Inject]
+        private GameManager gameManager;
 
         protected override void OnUpdate()
         {
@@ -39,7 +34,11 @@ namespace Assets.Code.Bubbles.Hybrid
 
                     if (spawnBubbleCmp.RandomizeNumber)
                     {
-                        beginSimBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = (int)math.pow(2, random.NextInt(1, 4)) });
+                        beginSimBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = gameManager.GetRandomBubbleNumber() });
+                    }
+                    else
+                    {
+                        beginSimBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
                     }
 
                     beginSimBuffer.RemoveComponent<SpawnBubbleCmp>(e);

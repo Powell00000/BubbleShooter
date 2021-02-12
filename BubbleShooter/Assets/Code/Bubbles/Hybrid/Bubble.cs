@@ -30,11 +30,6 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
         }
 
-        private void Update()
-        {
-            //sphereCollider.radius = transform.localScale.x / 2;
-        }
-
         public void RefreshNumber(int number)
         {
             this.number = number;

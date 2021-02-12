@@ -14,7 +14,7 @@ namespace Assets.Code.Bubbles
                 .WithoutBurst()
                 .ForEach((Entity e, in PopulateRowWithBubbles populateRowCmp) =>
                 {
-                    MarkCellsToSpawnBubbles(populateRowCmp.Row, beginInitBuffer);
+                    MarkCellsToSpawnBubbles(populateRowCmp, beginInitBuffer);
                     endSimBuffer.DestroyEntity(e);
                 })
                 .Run();
@@ -23,13 +23,13 @@ namespace Assets.Code.Bubbles
             endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
 
-        private void MarkCellsToSpawnBubbles(int row, EntityCommandBuffer ecb)
+        private void MarkCellsToSpawnBubbles(PopulateRowWithBubbles populateRowCmp, EntityCommandBuffer ecb)
         {
             Entities
-                .WithSharedComponentFilter(new RowSharedCmp { RowNumber = row })
+                .WithSharedComponentFilter(new RowSharedCmp { RowNumber = populateRowCmp.Row })
                 .ForEach((Entity e) =>
                 {
-                    ecb.AddComponent(e, new SpawnBubbleCmp());
+                    ecb.AddComponent(e, new SpawnBubbleCmp() { RandomizeNumber = populateRowCmp.RandomizeNumbers });
                 })
                 .Schedule();
         }

@@ -51,7 +51,7 @@ namespace Assets.Code.Physics
 
         public static Bubble[] GetNeighbouringBubbles(Vector3 position)
         {
-            Collider[] overlappingCells = UnityEngine.Physics.OverlapSphere(position, GameManager.CellDiameter * 2, LayerMask.GetMask("Bubble"));
+            Collider[] overlappingCells = UnityEngine.Physics.OverlapSphere(position, GameManager.CellDiameter, LayerMask.GetMask("Bubble"));
             List<Bubble> bubbles = new List<Bubble>(overlappingCells.Length);
             for (int i = 0; i < overlappingCells.Length; i++)
             {

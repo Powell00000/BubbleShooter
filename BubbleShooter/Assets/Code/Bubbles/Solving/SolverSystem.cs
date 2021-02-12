@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Code.DOTS;
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -16,27 +17,45 @@ namespace Assets.Code.Bubbles.Solving
 
         protected override void OnUpdate()
         {
-            List<Entity> bubblesWithSameNumber = new List<Entity>();
+            HashSet<Entity> allBubblesWithSameNumber = new HashSet<Entity>();
             Entity solveHere = GetSingletonEntity<SolveHereTagCmp>();
             NumberCmp numberCmp = EntityManager.GetComponentData<NumberCmp>(solveHere);
 
-            bubblesWithSameNumber.AddRange(GetBubblesWithSameNumberNearEntity(solveHere, numberCmp.Value));
+            allBubblesWithSameNumber.Add(solveHere);
 
-            Debug.Log($"Same numbers at start: {bubblesWithSameNumber.Count}");
+            TraverseBubbles(ref allBubblesWithSameNumber, solveHere, ref numberCmp);
 
-            for (int i = 0; i < bubblesWithSameNumber.Count; i++)
+            Debug.Log($"Same numbers: {allBubblesWithSameNumber.Count}");
+
+            if (allBubblesWithSameNumber.Count > 1)
             {
-                bubblesWithSameNumber.AddRange(GetBubblesWithSameNumberNearEntity(bubblesWithSameNumber[i], numberCmp.Value));
+                var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
+                foreach (var bubble in allBubblesWithSameNumber)
+                {
+                    beginInitBuffer.AddComponent(bubble, new DestroyTagCmp());
+                }
+                beginInitializationBuffer.AddJobHandleForProducer(Dependency);
             }
-
-            Debug.Log($"Same numbers at end: {bubblesWithSameNumber.Count}");
 
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             endSimBuffer.RemoveComponent<SolveHereTagCmp>(solveHere);
             endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
 
-        private List<Entity> GetBubblesWithSameNumberNearEntity(Entity entity, int number)
+        private void TraverseBubbles(ref HashSet<Entity> collectedBubbles, Entity bubble, ref NumberCmp number)
+        {
+            var bubblesNearEntity = GetBubblesWithSameNumberNearEntity(bubble, number.Value);
+            foreach (var item in bubblesNearEntity)
+            {
+                if (!collectedBubbles.Contains(item))
+                {
+                    collectedBubbles.Add(item);
+                    TraverseBubbles(ref collectedBubbles, item, ref number);
+                }
+            }
+        }
+
+        private Entity[] GetBubblesWithSameNumberNearEntity(Entity entity, int number)
         {
             List<Entity> bubblesWithSameNumber = new List<Entity>(6);
 
@@ -51,7 +70,7 @@ namespace Assets.Code.Bubbles.Solving
                 }
             }
 
-            return bubblesWithSameNumber;
+            return bubblesWithSameNumber.ToArray();
         }
     }
 }

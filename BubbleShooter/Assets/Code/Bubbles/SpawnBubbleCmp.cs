@@ -6,5 +6,6 @@ namespace Assets.Code.Bubbles
     {
         public bool SolveHere;
         public bool RandomizeNumber;
+        public int Number;
     }
 }

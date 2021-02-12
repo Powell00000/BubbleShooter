@@ -10,13 +10,23 @@ namespace Assets.Code.Bubbles.Mono
         [SerializeField]
         private SphereCollider sphereCollider;
 
+        [SerializeField]
+        private TMPro.TMP_Text numberText;
+
         private Vector3 direction;
         private float speed = 10;
         private Entity bubbleIsShootingTagEntity;
+        private int number;
 
         private void Awake()
         {
             bubbleIsShootingTagEntity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity(Archetypes.BubbleIsShooting);
+        }
+
+        public void SetNumber(int number)
+        {
+            this.number = number;
+            numberText.text = number.ToString();
         }
 
         public void SetDirection(Vector3 direction)
@@ -37,7 +47,7 @@ namespace Assets.Code.Bubbles.Mono
 
                 if (castResult.FoundCell != null)
                 {
-                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(castResult.FoundCell.Entity, new SpawnBubbleCmp() { SolveHere = true });
+                    World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(castResult.FoundCell.Entity, new SpawnBubbleCmp() { SolveHere = true, RandomizeNumber = false, Number = number });
                     World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(bubbleIsShootingTagEntity, new DestroyTagCmp());
 
                     Destroy(gameObject);
