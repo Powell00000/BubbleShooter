@@ -26,6 +26,11 @@ public class Cannon : MonoBehaviour
     [SerializeField]
     private SpriteRenderer circle;
 
+    [SerializeField]
+    private TMPro.TMP_Text nextNumberText;
+
+    private int nextNumber;
+
     private GameManager gameManager;
 
     private bool spawnBubble;
@@ -34,6 +39,7 @@ public class Cannon : MonoBehaviour
     {
         transform.localScale *= GameManager.CellDiameter;
         this.gameManager = gameManager;
+        PreloadNextNumber();
         StartCoroutine(ShootLineRoutine());
     }
 
@@ -117,10 +123,18 @@ public class Cannon : MonoBehaviour
             {
                 ShootingBubble spawnedBubble = Instantiate(shootingBubblePrefab, shootPoint.position, Quaternion.identity, null);
                 spawnedBubble.transform.localScale = Vector3.one * GameManager.CellDiameter;
-                spawnedBubble.SetNumber(gameManager.GetRandomBubbleNumber());
+                spawnedBubble.SetNumber(nextNumber);
                 spawnedBubble.SetDirection(cannonDirection);
                 spawnBubble = false;
+
+                PreloadNextNumber();
             }
         }
+    }
+
+    private void PreloadNextNumber()
+    {
+        nextNumber = gameManager.GetRandomBubbleNumber();
+        nextNumberText.text = nextNumber.ToString();
     }
 }
