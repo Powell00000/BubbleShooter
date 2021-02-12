@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Bubbles.Solving;
+using Assets.Code.DOTS;
 using Assets.Code.Grid.Cells;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -20,8 +21,7 @@ namespace Assets.Code.Bubbles.Hybrid
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
-                .WithAll<CellCmp>()
-                .ForEach((Entity e, in Scale scaleCmp, in SpawnBubbleCmp spawnBubbleCmp, in Translation translation) =>
+                .ForEach((Entity e, ref CellCmp cellCmp, in Scale scaleCmp, in SpawnBubbleCmp spawnBubbleCmp, in Translation translation) =>
                 {
                     var bubble = UnityEngine.Object.Instantiate(bubblePrefab, translation.Value, quaternion.identity).GetComponent<Bubble>();
                     bubble.CreateAndSetupBubbleEntity(e, scaleCmp);
@@ -40,9 +40,13 @@ namespace Assets.Code.Bubbles.Hybrid
                         EntityManager.SetComponentData(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
                     }
 
+                    cellCmp.OccupyingEntity = bubble.Entity;
+
                     EntityManager.RemoveComponent<SpawnBubbleCmp>(e);
                 })
                 .Run();
+
+            EntityManager.CreateEntity(Archetypes.RefreshConnections);
         }
     }
 }

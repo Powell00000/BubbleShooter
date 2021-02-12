@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Bubbles.Hybrid;
 using Assets.Code.DOTS;
+using Assets.Code.Physics;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Entities;
@@ -11,7 +12,7 @@ namespace Assets.Code.Bubbles.Solving
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     internal class SolverSystem : SystemBaseWithBarriers
     {
-        private struct SolverNode
+        private struct BubbleNode
         {
             public Bubble CurrentBubble;
             public Bubble[] Neighbours;
@@ -24,7 +25,7 @@ namespace Assets.Code.Bubbles.Solving
 
         protected override void OnUpdate()
         {
-            Dictionary<Entity, SolverNode> allBubblesWithSameNumber = new Dictionary<Entity, SolverNode>();
+            Dictionary<Entity, BubbleNode> allBubblesWithSameNumber = new Dictionary<Entity, BubbleNode>();
             Entity solveHere = GetSingletonEntity<SolveHereTagCmp>();
             Bubble bubbleMono = EntityManager.GetComponentObject<Bubble>(solveHere);
 
@@ -58,7 +59,7 @@ namespace Assets.Code.Bubbles.Solving
                 }
                 if (!foundNextIteration)
                 {
-                    SolverNode[] sortedNodesFromTopToBottom = new SolverNode[allBubblesWithSameNumber.Values.Count];
+                    BubbleNode[] sortedNodesFromTopToBottom = new BubbleNode[allBubblesWithSameNumber.Values.Count];
                     allBubblesWithSameNumber.Values.CopyTo(sortedNodesFromTopToBottom, 0);
                     sortedNodesFromTopToBottom = sortedNodesFromTopToBottom.OrderBy((node) => -node.CurrentBubble.transform.position.y).ToArray();
 
@@ -67,7 +68,7 @@ namespace Assets.Code.Bubbles.Solving
                         Debug.Log(item.CurrentBubble.transform.position);
                     }
 
-                    SolverNode mostTopNode = sortedNodesFromTopToBottom[0];
+                    BubbleNode mostTopNode = sortedNodesFromTopToBottom[0];
                     beginInitBuffer.SetComponent(mostTopNode.CurrentBubble.Entity, new NumberCmp { Value = outputNumber });
                     allBubblesWithSameNumber.Remove(mostTopNode.CurrentBubble.Entity);
                 }
@@ -77,6 +78,7 @@ namespace Assets.Code.Bubbles.Solving
                     beginInitBuffer.AddComponent(entity, new DestroyTagCmp());
                 }
 
+                beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RefreshConnections));
                 beginInitializationBuffer.AddJobHandleForProducer(Dependency);
             }
 
@@ -85,12 +87,12 @@ namespace Assets.Code.Bubbles.Solving
             endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
 
-        private void TraverseBubbles(ref Dictionary<Entity, SolverNode> collectedBubbles, Bubble bubble)
+        private void TraverseBubbles(ref Dictionary<Entity, BubbleNode> collectedBubbles, Bubble bubble)
         {
-            SolverNode node = new SolverNode
+            BubbleNode node = new BubbleNode
             {
                 CurrentBubble = bubble,
-                Neighbours = GetBubblesNearEntity(bubble)
+                Neighbours = PhysicsEx.GetNeighbouringBubbles(bubble.transform.position)
             };
 
             if (!collectedBubbles.ContainsKey(node.CurrentBubble.Entity))
@@ -106,20 +108,6 @@ namespace Assets.Code.Bubbles.Solving
                     TraverseBubbles(ref collectedBubbles, item);
                 }
             }
-        }
-
-        private Bubble[] GetBubblesNearEntity(Bubble bubble)
-        {
-            List<Bubble> bubblesWithSameNumber = new List<Bubble>(6);
-
-            var nearBubbles = Physics.PhysicsEx.GetNeighbouringBubbles(bubble.transform.position);
-
-            for (int i = 0; i < nearBubbles.Length; i++)
-            {
-                bubblesWithSameNumber.Add(nearBubbles[i]);
-            }
-
-            return bubblesWithSameNumber.ToArray();
         }
     }
 }

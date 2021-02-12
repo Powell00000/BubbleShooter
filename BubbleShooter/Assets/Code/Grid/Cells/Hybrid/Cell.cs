@@ -1,5 +1,7 @@
-﻿using Assets.Code.Hybrid;
+﻿using Assets.Code.Bubbles.Connections;
+using Assets.Code.Hybrid;
 using Unity.Transforms;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Code.Grid.Cells.Hybrid
@@ -7,9 +9,7 @@ namespace Assets.Code.Grid.Cells.Hybrid
     internal class Cell : HybridMonoBase
     {
         [SerializeField]
-        SphereCollider sphereCollider;
-
-        public bool gizmos = false;
+        private SphereCollider sphereCollider;
 
         [SerializeField]
         private SpriteRenderer spriteRenderer;
@@ -23,10 +23,11 @@ namespace Assets.Code.Grid.Cells.Hybrid
             entityManager.AddComponentObject(Entity, transform);
         }
 
-        private void Update()
+        private void OnDrawGizmos()
         {
-            //sphereCollider.radius = transform.localScale.x / 2;
-            spriteRenderer.color = gizmos ? Color.green : Color.gray;
+            Handles.Label(transform.position, $"Empty: {entityManager.GetComponentData<CellCmp>(entity).IsEmpty}");
+            Handles.Label(transform.position + Vector3.down * 0.1f, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
+
         }
     }
 }

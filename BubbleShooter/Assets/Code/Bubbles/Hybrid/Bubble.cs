@@ -1,7 +1,9 @@
-﻿using Assets.Code.Hybrid;
+﻿using Assets.Code.Bubbles.Connections;
+using Assets.Code.Hybrid;
 using Assets.Code.Movement.Follow;
 using Unity.Entities;
 using Unity.Transforms;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Code.Bubbles.Hybrid
@@ -34,6 +36,11 @@ namespace Assets.Code.Bubbles.Hybrid
         {
             this.number = number;
             numberText.text = number.ToString();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            //Handles.Label(transform.position, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
         }
     }
 }
