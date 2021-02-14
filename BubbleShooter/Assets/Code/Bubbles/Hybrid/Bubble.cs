@@ -1,9 +1,8 @@
-﻿using Assets.Code.Bubbles.Connections;
+﻿using Assets.Code.Bubbles.Nodes;
 using Assets.Code.Hybrid;
 using Assets.Code.Movement.Follow;
 using Unity.Entities;
 using Unity.Transforms;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Code.Bubbles.Hybrid
@@ -28,6 +27,7 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.AddComponentData(entity, new FollowEntityCmp { EntityToFollow = entityToFollow });
             entityManager.SetComponentData(entity, scale);
             entityManager.AddComponentObject(entity, transform);
+            entityManager.AddBuffer<NodeNeighboursCmp>(entity);
 
             entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
         }

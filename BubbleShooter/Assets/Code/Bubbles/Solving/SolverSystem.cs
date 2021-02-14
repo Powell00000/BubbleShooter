@@ -1,10 +1,11 @@
 ﻿using Assets.Code.Bubbles.Hybrid;
+using Assets.Code.Bubbles.Nodes;
 using Assets.Code.DOTS;
-using Assets.Code.Physics;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace Assets.Code.Bubbles.Solving
@@ -12,11 +13,6 @@ namespace Assets.Code.Bubbles.Solving
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     internal class SolverSystem : SystemBaseWithBarriers
     {
-        private struct BubbleNode
-        {
-            public Bubble CurrentBubble;
-            public Bubble[] Neighbours;
-        }
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -25,30 +21,35 @@ namespace Assets.Code.Bubbles.Solving
 
         protected override void OnUpdate()
         {
-            Dictionary<Entity, BubbleNode> allBubblesWithSameNumber = new Dictionary<Entity, BubbleNode>();
+            Dictionary<Entity, DynamicBuffer<NodeNeighboursCmp>> bubblesWithSameNumber = new Dictionary<Entity, DynamicBuffer<NodeNeighboursCmp>>();
+
             Entity solveHere = GetSingletonEntity<SolveHereTagCmp>();
             Bubble bubbleMono = EntityManager.GetComponentObject<Bubble>(solveHere);
 
-            TraverseBubbles(ref allBubblesWithSameNumber, bubbleMono);
+            TraverseBubbles(ref bubblesWithSameNumber, solveHere);
 
-            Debug.Log($"Same numbers: {allBubblesWithSameNumber.Count}");
+            Debug.Log($"Same numbers: {bubblesWithSameNumber.Count}");
 
-            if (allBubblesWithSameNumber.Count > 1)
+            if (bubblesWithSameNumber.Count > 1)
             {
-                int outputNumber = (int)math.pow(bubbleMono.Number, allBubblesWithSameNumber.Count);
+                int outputNumber = (int)math.pow(bubbleMono.Number, bubblesWithSameNumber.Count);
 
                 var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
                 bool foundNextIteration = false;
-                foreach (var node in allBubblesWithSameNumber.Values)
+                foreach (var element in bubblesWithSameNumber)
                 {
-                    for (int i = 0; i < node.Neighbours.Length; i++)
+                    Entity currentEntity = element.Key;
+                    var neighboursBuffer = element.Value;
+                    for (int i = 0; i < neighboursBuffer.Length; i++)
                     {
-                        if (node.Neighbours[i].Number == outputNumber)
+                        NumberCmp number = EntityManager.GetComponentData<NumberCmp>(neighboursBuffer[i].Neighbour);
+
+                        if (number.Value == outputNumber)
                         {
-                            beginInitBuffer.SetComponent(node.CurrentBubble.Entity, new NumberCmp { Value = outputNumber });
-                            beginInitBuffer.AddComponent(node.CurrentBubble.Entity, new SolveHereTagCmp());
+                            beginInitBuffer.SetComponent(currentEntity, new NumberCmp { Value = outputNumber });
+                            beginInitBuffer.AddComponent(currentEntity, new SolveHereTagCmp());
                             foundNextIteration = true;
-                            allBubblesWithSameNumber.Remove(node.CurrentBubble.Entity);
+                            bubblesWithSameNumber.Remove(currentEntity);
                             break;
                         }
                     }
@@ -59,21 +60,14 @@ namespace Assets.Code.Bubbles.Solving
                 }
                 if (!foundNextIteration)
                 {
-                    BubbleNode[] sortedNodesFromTopToBottom = new BubbleNode[allBubblesWithSameNumber.Values.Count];
-                    allBubblesWithSameNumber.Values.CopyTo(sortedNodesFromTopToBottom, 0);
-                    sortedNodesFromTopToBottom = sortedNodesFromTopToBottom.OrderBy((node) => -node.CurrentBubble.transform.position.y).ToArray();
+                    var sortedEntities = bubblesWithSameNumber.Keys.OrderBy((node) => -EntityManager.GetComponentData<Translation>(node).Value.y).ToList();
 
-                    foreach (var item in sortedNodesFromTopToBottom)
-                    {
-                        Debug.Log(item.CurrentBubble.transform.position);
-                    }
-
-                    BubbleNode mostTopNode = sortedNodesFromTopToBottom[0];
-                    beginInitBuffer.SetComponent(mostTopNode.CurrentBubble.Entity, new NumberCmp { Value = outputNumber });
-                    allBubblesWithSameNumber.Remove(mostTopNode.CurrentBubble.Entity);
+                    Entity topMostEntity = sortedEntities[0];
+                    beginInitBuffer.SetComponent(topMostEntity, new NumberCmp { Value = outputNumber });
+                    bubblesWithSameNumber.Remove(topMostEntity);
                 }
 
-                foreach (var entity in allBubblesWithSameNumber.Keys)
+                foreach (var entity in bubblesWithSameNumber.Keys)
                 {
                     beginInitBuffer.AddComponent(entity, new DestroyTagCmp());
                 }
@@ -87,25 +81,25 @@ namespace Assets.Code.Bubbles.Solving
             endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
 
-        private void TraverseBubbles(ref Dictionary<Entity, BubbleNode> collectedBubbles, Bubble bubble)
+        private void TraverseBubbles(ref Dictionary<Entity, DynamicBuffer<NodeNeighboursCmp>> collectedBubbles, Entity currrentEntity)
         {
-            BubbleNode node = new BubbleNode
+            var neighbours = EntityManager.GetBuffer<NodeNeighboursCmp>(currrentEntity);
+            if (!collectedBubbles.ContainsKey(currrentEntity))
             {
-                CurrentBubble = bubble,
-                Neighbours = PhysicsEx.GetNeighbouringBubbles(bubble.transform.position)
-            };
-
-            if (!collectedBubbles.ContainsKey(node.CurrentBubble.Entity))
-            {
-                collectedBubbles.Add(node.CurrentBubble.Entity, node);
+                collectedBubbles.Add(currrentEntity, neighbours);
             }
 
-            foreach (var item in node.Neighbours)
+            foreach (var nodeNeighbour in neighbours)
             {
-                if (!collectedBubbles.ContainsKey(item.Entity) && item.Number == node.CurrentBubble.Number)
+                if (!collectedBubbles.ContainsKey(nodeNeighbour.Neighbour))
                 {
-                    //collectedBubbles.Add(item.Entity, node);
-                    TraverseBubbles(ref collectedBubbles, item);
+                    NumberCmp neighbourNumber = EntityManager.GetComponentData<NumberCmp>(nodeNeighbour.Neighbour);
+                    NumberCmp bubbleNumber = EntityManager.GetComponentData<NumberCmp>(currrentEntity);
+
+                    if (neighbourNumber.Value == bubbleNumber.Value)
+                    {
+                        TraverseBubbles(ref collectedBubbles, nodeNeighbour.Neighbour);
+                    }
                 }
             }
         }

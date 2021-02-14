@@ -3,6 +3,7 @@
 namespace Assets.Code.Bubbles.Connections
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [DisableAutoCreation]
     internal class RemoveTopRowConnectionTagsSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()

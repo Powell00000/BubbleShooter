@@ -9,6 +9,7 @@ using Unity.Entities;
 namespace Assets.Code.Bubbles.Connections
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [DisableAutoCreation]
     internal class HasConnectionWithTopRowSystem : SystemBaseWithBarriers
     {
         private struct CellNode

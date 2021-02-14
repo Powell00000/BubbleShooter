@@ -4,6 +4,7 @@ using Assets.Code.Grid.Cells;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Assets.Code.Bubbles.Hybrid
 {
@@ -18,6 +19,8 @@ namespace Assets.Code.Bubbles.Hybrid
 
         protected override void OnUpdate()
         {
+            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
+
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
@@ -28,7 +31,8 @@ namespace Assets.Code.Bubbles.Hybrid
 
                     if (spawnBubbleCmp.SolveHere)
                     {
-                        EntityManager.AddComponentData(bubble.Entity, new SolveHereTagCmp());
+                        endSimBuffer.AddComponent(bubble.Entity, new SolveHereTagCmp());
+                        Debug.Log("spawn");
                     }
 
                     if (spawnBubbleCmp.RandomizeNumber)

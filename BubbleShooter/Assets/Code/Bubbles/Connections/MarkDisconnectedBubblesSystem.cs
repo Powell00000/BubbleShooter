@@ -5,7 +5,7 @@ using Unity.Entities;
 namespace Assets.Code.Bubbles.Connections
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    //[DisableAutoCreation]
+    [DisableAutoCreation]
     internal class MarkDisconnectedBubblesSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()
