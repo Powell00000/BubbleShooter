@@ -4,7 +4,6 @@ using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
 {
-    [DisableAutoCreation]
     internal class RemoveDisconnectedBubblesSystem : SystemBaseWithBarriers
     {
         protected override void OnUpdate()
@@ -18,6 +17,7 @@ namespace Assets.Code.Bubbles.Connections
                     endSimBuffer.AddComponent(e, new DestroyTagCmp());
                 })
                 .Schedule();
+            endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

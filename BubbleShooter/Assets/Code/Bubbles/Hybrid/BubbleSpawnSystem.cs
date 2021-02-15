@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.Code.Bubbles.Hybrid
 {
-    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateInGroup(typeof(PresentationSystemGroup))]
     internal class BubbleSpawnSystem : SystemBaseWithBarriers
     {
         [Zenject.Inject]
@@ -19,7 +19,7 @@ namespace Assets.Code.Bubbles.Hybrid
 
         protected override void OnUpdate()
         {
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
 
             Entities
                 .WithoutBurst()
@@ -29,28 +29,31 @@ namespace Assets.Code.Bubbles.Hybrid
                     var bubble = UnityEngine.Object.Instantiate(bubblePrefab, translation.Value, quaternion.identity).GetComponent<Bubble>();
                     bubble.CreateAndSetupBubbleEntity(e, scaleCmp);
 
+                    Debug.Log("spawn");
+
                     if (spawnBubbleCmp.SolveHere)
                     {
-                        endSimBuffer.AddComponent(bubble.Entity, new SolveHereTagCmp());
-                        Debug.Log("spawn");
+                        beginInitBuffer.AddComponent(bubble.Entity, new SolveHereTagCmp());
                     }
 
                     if (spawnBubbleCmp.RandomizeNumber)
                     {
-                        EntityManager.SetComponentData(bubble.Entity, new NumberCmp { Value = gameManager.GetRandomBubbleNumber() });
+                        beginInitBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = gameManager.GetRandomBubbleNumber() });
                     }
                     else
                     {
-                        EntityManager.SetComponentData(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
+                        beginInitBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
                     }
 
                     cellCmp.OccupyingEntity = bubble.Entity;
 
-                    EntityManager.RemoveComponent<SpawnBubbleCmp>(e);
+                    beginInitBuffer.RemoveComponent<SpawnBubbleCmp>(e);
                 })
                 .Run();
 
-            EntityManager.CreateEntity(Archetypes.RefreshConnections);
+            //endSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RefreshConnections));
+
+            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

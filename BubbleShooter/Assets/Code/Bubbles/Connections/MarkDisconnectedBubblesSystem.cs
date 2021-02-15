@@ -10,7 +10,7 @@ namespace Assets.Code.Bubbles.Connections
         protected override void OnCreate()
         {
             base.OnCreate();
-            RequireSingletonForUpdate<ConnectionsRefreshedTagCmp>();
+            //RequireSingletonForUpdate<ConnectionsRefreshedTagCmp>();
         }
 
         protected override void OnUpdate()
@@ -19,21 +19,21 @@ namespace Assets.Code.Bubbles.Connections
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             bool bubblesRemoved = false;
             Entities
-                .WithNone<HasConnectionWithTopRowTagCmp>()
+                .WithNone<HasConnectionWithTopRowTagCmp, DisconnectedBubbleTagCmp, DestroyTagCmp>()
                 .ForEach((Entity e, ref CellCmp cellCmp) =>
                 {
                     if (!cellCmp.IsEmpty)
                     {
-                        bubblesRemoved = true;
+                        //bubblesRemoved = true;
                         beginSimBuffer.AddComponent(cellCmp.OccupyingEntity, new DisconnectedBubbleTagCmp());
                     }
                 })
-                .Run();
+                .Schedule();
 
-            endSimBuffer.DestroyEntity(GetSingletonEntity<ConnectionsRefreshedTagCmp>());
+            //endSimBuffer.DestroyEntity(GetSingletonEntity<ConnectionsRefreshedTagCmp>());
             if (bubblesRemoved)
             {
-                beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RefreshConnections));
+                //beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RefreshConnections));
             }
 
             beginSimulationBuffer.AddJobHandleForProducer(Dependency);

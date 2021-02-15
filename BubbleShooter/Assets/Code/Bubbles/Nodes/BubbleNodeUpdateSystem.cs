@@ -26,17 +26,17 @@ namespace Assets.Code.Bubbles.Nodes
                 .WithoutBurst()
                 .ForEach((Entity e, ref DynamicBuffer<NodeNeighboursCmp> neighboursCmp, in Translation translation) =>
                 {
-                    NativeArray<NodeNeighboursCmp> nodeNeighbours = GetNeighbours(translation.Value, e);
+                    NativeList<NodeNeighboursCmp> neighbours = new NativeList<NodeNeighboursCmp>(6, Allocator.TempJob);
+                    GetNeighbours(translation.Value, e, ref neighbours);
                     neighboursCmp.Clear();
-                    neighboursCmp.AddRange(nodeNeighbours);
-                    nodeNeighbours.Dispose();
+                    neighboursCmp.AddRange(neighbours);
+                    neighbours.Dispose();
                 })
                 .Run();
         }
 
-        private NativeArray<NodeNeighboursCmp> GetNeighbours(float3 position, Entity entity)
+        private void GetNeighbours(float3 position, Entity entity, ref NativeList<NodeNeighboursCmp> neighbours)
         {
-            NativeList<NodeNeighboursCmp> neighbours = new NativeList<NodeNeighboursCmp>(6, Allocator.TempJob);
             float cellDiameter = GameManager.CellDiameter;
 
             var entities = allBubbles.ToEntityArray(Allocator.TempJob);
@@ -52,7 +52,8 @@ namespace Assets.Code.Bubbles.Nodes
                     }
                 }
             }
-            return neighbours;
+            entities.Dispose();
+            translations.Dispose();
         }
     }
 }
