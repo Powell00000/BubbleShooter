@@ -1,10 +1,12 @@
 ﻿
+using Assets.Code.Bubbles.Solving;
 using Assets.Code.Visuals;
 using Unity.Entities;
 
 namespace Assets.Code.Gameplay
 {
-    [DisableAutoCreation]
+    //[DisableAutoCreation]
+    [UpdateInGroup(typeof(PresentationSystemGroup))]
     internal class SpawnNextRowSystem : SystemBaseWithBarriers
     {
         [Zenject.Inject]
@@ -14,12 +16,16 @@ namespace Assets.Code.Gameplay
         {
             base.OnCreate();
             RequireSingletonForUpdate<AllVisualsFinishedTagCmp>();
+            RequireSingletonForUpdate<SolverFinishedTagCmp>();
+            //RequireSingletonForUpdate<SpawnNextRowTagCmp>();
         }
         protected override void OnUpdate()
         {
+
             gameManager.SpawnRow();
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
-            endSimBuffer.DestroyEntity(GetSingletonEntity<AllVisualsFinishedTagCmp>());
+            //endSimBuffer.DestroyEntity(GetSingletonEntity<SpawnNextRowTagCmp>());
+            endSimBuffer.DestroyEntity(GetSingletonEntity<SolverFinishedTagCmp>());
             endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }

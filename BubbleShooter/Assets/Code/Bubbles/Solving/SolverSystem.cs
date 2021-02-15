@@ -72,6 +72,7 @@ namespace Assets.Code.Bubbles.Solving
                         }
                     }
                     beginInitBuffer.SetComponent(topMostEntityWithNeighbour, new NumberCmp { Value = outputNumber });
+                    beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.SolverFinished));
                     bubblesWithSameNumber.Remove(topMostEntityWithNeighbour);
                 }
 

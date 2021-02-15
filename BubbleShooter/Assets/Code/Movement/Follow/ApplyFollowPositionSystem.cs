@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Assets.Code.DOTS;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -12,6 +13,7 @@ namespace Assets.Code.Movement.Follow
             float dt = Time.DeltaTime;
             var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             Entities
+                .WithNone<DestroyTagCmp>()
                 .ForEach((Entity e, ref Translation translation, in FollowEntityCmp followCmp) =>
                 {
                     float distance = math.distance(translation.Value, followCmp.TargetPosition);

@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Bubbles;
 using Assets.Code.Bubbles.Connections;
+using Assets.Code.Bubbles.Solving;
 using Assets.Code.Grid.Spawn;
 using Assets.Code.Visuals;
 using Unity.Entities;
@@ -41,6 +42,11 @@ namespace Assets.Code.DOTS
         public static ComponentType[] ConnectionsRefreshed => new ComponentType[]
         {
             ComponentType.ReadOnly<ConnectionsRefreshedTagCmp>(),
+        };
+
+        public static ComponentType[] SolverFinished => new ComponentType[]
+        {
+            ComponentType.ReadOnly<SolverFinishedTagCmp>(),
         };
     }
 }

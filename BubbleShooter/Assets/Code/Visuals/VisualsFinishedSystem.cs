@@ -28,7 +28,6 @@ namespace Assets.Code.Visuals
         protected override void OnUpdate()
         {
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
-            //var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
 
             bool visualsInProgress = HasSingleton<VisualsInProgressTagCmp>();
             bool anyVisualsPlaying = !visualsQuery.IsEmpty;
@@ -36,6 +35,10 @@ namespace Assets.Code.Visuals
             if (!visualsInProgress && anyVisualsPlaying)
             {
                 beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.VisualsInProgress));
+                if (HasSingleton<AllVisualsFinishedTagCmp>())
+                {
+                    beginSimBuffer.DestroyEntity(GetSingletonEntity<AllVisualsFinishedTagCmp>());
+                }
             }
 
             if (visualsInProgress && !anyVisualsPlaying)
@@ -45,7 +48,6 @@ namespace Assets.Code.Visuals
             }
 
             beginSimulationBuffer.AddJobHandleForProducer(Dependency);
-            //endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }
