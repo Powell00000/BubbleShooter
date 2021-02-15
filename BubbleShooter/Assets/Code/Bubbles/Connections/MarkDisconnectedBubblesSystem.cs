@@ -15,7 +15,6 @@ namespace Assets.Code.Bubbles.Connections
         {
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
-            bool bubblesRemoved = false;
             Entities
                 .WithNone<HasConnectionWithTopRowTagCmp, DisconnectedBubbleTagCmp, DestroyTagCmp>()
                 .ForEach((Entity e, ref BubbleCmp bubbleCmp) =>

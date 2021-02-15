@@ -1,4 +1,5 @@
 ﻿using Assets.Code.DOTS;
+using Assets.Code.Visuals;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Hybrid
@@ -11,6 +12,8 @@ namespace Assets.Code.Bubbles.Hybrid
             Entities
                 .WithoutBurst()
                 .WithAll<DestroyTagCmp>()
+                .WithNone<IsAnimatingTagCmp>()
+                .WithStructuralChanges()
                 .ForEach((Entity e, Bubble bubbleMono) =>
                 {
                     bubbleMono.Destroy();

@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Bubbles;
 using Assets.Code.DOTS;
+using Assets.Code.Grid.Spawn;
 using Assets.Code.Movement;
 using Assets.Code.Movement.Follow;
 using Unity.Entities;
@@ -16,6 +17,9 @@ namespace Assets.Code.Visuals
                 typeof(BubbleIsShootingTagCmp),
                 typeof(IsMovingTagCmp),
                 typeof(IsAnimatingTagCmp),
+                typeof(SpawnBubbleCmp),
+                typeof(JustSpawnedTagCmp),
+                typeof(SpawnRowCmp),
             }
         };
         private EntityQuery visualsQuery;
@@ -28,27 +32,27 @@ namespace Assets.Code.Visuals
 
         protected override void OnUpdate()
         {
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
 
             bool visualsInProgress = HasSingleton<VisualsInProgressTagCmp>();
             bool anyVisualsPlaying = !visualsQuery.IsEmpty;
 
             if (!visualsInProgress && anyVisualsPlaying)
             {
-                beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.VisualsInProgress));
+                beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.VisualsInProgress));
                 if (HasSingleton<AllVisualsFinishedTagCmp>())
                 {
-                    beginSimBuffer.DestroyEntity(GetSingletonEntity<AllVisualsFinishedTagCmp>());
+                    beginInitBuffer.DestroyEntity(GetSingletonEntity<AllVisualsFinishedTagCmp>());
                 }
             }
 
             if (visualsInProgress && !anyVisualsPlaying)
             {
-                beginSimBuffer.DestroyEntity(GetSingletonEntity<VisualsInProgressTagCmp>());
-                beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.AllVisualsFinished));
+                beginInitBuffer.DestroyEntity(GetSingletonEntity<VisualsInProgressTagCmp>());
+                beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.AllVisualsFinished));
             }
 
-            beginSimulationBuffer.AddJobHandleForProducer(Dependency);
+            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

@@ -7,15 +7,14 @@ namespace Assets.Code.Bubbles.Hybrid
     {
         protected override void OnUpdate()
         {
-            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             Entities
+                .WithStructuralChanges()
                 .WithoutBurst()
                 .ForEach((Entity e, Bubble bubbleMono, in NumberCmp numberCmp) =>
                 {
-                    bubbleMono.RefreshNumber(numberCmp.Value, beginInitBuffer);
+                    bubbleMono.RefreshNumber(numberCmp.Value);
                 })
                 .Run();
-            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

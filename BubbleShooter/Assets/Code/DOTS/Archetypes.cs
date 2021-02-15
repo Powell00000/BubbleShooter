@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Bubbles;
 using Assets.Code.Bubbles.Connections;
 using Assets.Code.Bubbles.Solving;
+using Assets.Code.Gameplay;
 using Assets.Code.Grid.Spawn;
 using Assets.Code.Visuals;
 using Unity.Entities;
@@ -9,6 +10,11 @@ namespace Assets.Code.DOTS
 {
     internal static class Archetypes
     {
+        public static ComponentType[] SpawnNextRow => new ComponentType[]
+        {
+            ComponentType.ReadOnly<SpawnNextRowTagCmp>(),
+        };
+
         public static ComponentType[] RowSpawned => new ComponentType[]
         {
             ComponentType.ReadOnly<RowSpawnedTagCmp>(),
@@ -49,4 +55,5 @@ namespace Assets.Code.DOTS
             ComponentType.ReadOnly<SolverFinishedTagCmp>(),
         };
     }
+
 }

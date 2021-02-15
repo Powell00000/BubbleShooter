@@ -24,7 +24,7 @@ namespace Assets.Code.Grid.Cells.Hybrid
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             if (!Application.isPlaying)
             {
@@ -32,7 +32,6 @@ namespace Assets.Code.Grid.Cells.Hybrid
             }
 
             Handles.Label(transform.position, $"Empty: {entityManager.GetComponentData<CellCmp>(entity).IsEmpty}");
-            Handles.Label(transform.position + Vector3.down * 0.1f, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
         }
 #endif
     }

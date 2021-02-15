@@ -8,16 +8,16 @@ namespace Assets.Code.Bubbles.Connections
     {
         protected override void OnUpdate()
         {
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             Entities
                 .WithAll<DisconnectedBubbleTagCmp>()
                 .WithNone<DestroyTagCmp>()
                 .ForEach((Entity e) =>
                 {
-                    endSimBuffer.AddComponent(e, new DestroyTagCmp());
+                    beginInitBuffer.AddComponent(e, new DestroyTagCmp());
                 })
                 .Schedule();
-            endSimulationBuffer.AddJobHandleForProducer(Dependency);
+            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }
