@@ -56,10 +56,5 @@ namespace Assets.Code.Bubbles.Hybrid
             this.number = number;
             numberText.text = number.ToString();
         }
-
-        private void OnDrawGizmosSelected()
-        {
-            //Handles.Label(transform.position, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
-        }
     }
 }
