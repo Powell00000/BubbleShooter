@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
             Position = spawnPosition.position
         });
         IsEvenRow = !IsEvenRow;
+        World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new PopulateRowWithBubbles { Row = 0, RandomizeNumbers = true });
     }
 
     [ContextMenu("Spawn init rows")]

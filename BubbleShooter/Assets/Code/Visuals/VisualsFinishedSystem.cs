@@ -5,7 +5,7 @@ using Unity.Entities;
 
 namespace Assets.Code.Visuals
 {
-    internal class VisualFinishedSystem : SystemBaseWithBarriers
+    internal class VisualsFinishedSystem : SystemBaseWithBarriers
     {
         private EntityQueryDesc visualsQueryDesc = new EntityQueryDesc
         {
