@@ -21,7 +21,6 @@ namespace Assets.Code.Gameplay
         }
         protected override void OnUpdate()
         {
-
             gameManager.SpawnRow();
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             //endSimBuffer.DestroyEntity(GetSingletonEntity<SpawnNextRowTagCmp>());

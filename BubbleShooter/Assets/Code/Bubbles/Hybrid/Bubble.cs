@@ -1,6 +1,9 @@
 ﻿using Assets.Code.Bubbles.Nodes;
+using Assets.Code.DOTS;
 using Assets.Code.Hybrid;
 using Assets.Code.Movement.Follow;
+using Assets.Code.Visuals;
+using DG.Tweening;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -14,6 +17,9 @@ namespace Assets.Code.Bubbles.Hybrid
 
         [SerializeField]
         private TMPro.TMP_Text numberText;
+
+        [SerializeField]
+        private GameObject visualsParent;
 
         private int number;
 
@@ -33,15 +39,22 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
         }
 
-        public void RefreshNumber(int number)
+        private void PingScale()
         {
-            this.number = number;
-            numberText.text = number.ToString();
+            visualsParent.transform.localScale = Vector3.one * 3;
+            visualsParent.transform.DOScale(Vector3.one, 0.4f).OnComplete(() => entityManager.RemoveComponent<IsAnimatingTagCmp>(entity));
         }
 
-        private void OnDrawGizmosSelected()
+        public void RefreshNumber(int number, EntityCommandBuffer ecb)
         {
-            //Handles.Label(transform.position, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
+            if (this.number < number && !entityManager.HasComponent<JustSpawnedTagCmp>(entity))
+            {
+                ecb.AddComponent(entity, new IsAnimatingTagCmp());
+                PingScale();
+            }
+
+            this.number = number;
+            numberText.text = number.ToString();
         }
     }
 }

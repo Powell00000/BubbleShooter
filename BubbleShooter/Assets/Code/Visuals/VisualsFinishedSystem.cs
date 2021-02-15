@@ -14,7 +14,8 @@ namespace Assets.Code.Visuals
             {
                 typeof(MoveDownTagCmp),
                 typeof(BubbleIsShootingTagCmp),
-                typeof(IsMovingTagCmp)
+                typeof(IsMovingTagCmp),
+                typeof(IsAnimatingTagCmp),
             }
         };
         private EntityQuery visualsQuery;

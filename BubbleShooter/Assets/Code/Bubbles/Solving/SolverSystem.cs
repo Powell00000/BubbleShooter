@@ -32,7 +32,8 @@ namespace Assets.Code.Bubbles.Solving
 
             if (bubblesWithSameNumber.Count > 1)
             {
-                int outputNumber = (int)math.pow(bubbleMono.Number, bubblesWithSameNumber.Count);
+                int root = (int)math.sqrt(bubbleMono.Number);
+                int outputNumber = (int)math.pow(2, root + bubblesWithSameNumber.Count);
 
                 var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
                 bool foundNextIteration = false;
