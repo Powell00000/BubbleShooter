@@ -1,11 +1,9 @@
 ﻿using Assets.Code.Bubbles.Solving;
-using Assets.Code.DOTS;
 using Assets.Code.Grid.Cells;
 using Assets.Code.Grid.Row;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Assets.Code.Bubbles.Hybrid
 {
@@ -29,8 +27,6 @@ namespace Assets.Code.Bubbles.Hybrid
                 {
                     var bubble = UnityEngine.Object.Instantiate(bubblePrefab, translation.Value, quaternion.identity).GetComponent<Bubble>();
                     bubble.CreateAndSetupBubbleEntity(e, scaleCmp);
-
-                    Debug.Log("spawn");
 
                     if (spawnBubbleCmp.SolveHere)
                     {

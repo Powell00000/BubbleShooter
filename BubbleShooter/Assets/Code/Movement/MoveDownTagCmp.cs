@@ -2,8 +2,7 @@
 
 namespace Assets.Code.Movement
 {
-    struct MoveDownCmp : IComponentData
+    internal struct MoveDownTagCmp : IComponentData
     {
-        public float TimeLeft;
     }
 }

@@ -80,7 +80,6 @@ namespace Assets.Code.Bubbles.Solving
                     beginInitBuffer.AddComponent(entity, new DestroyTagCmp());
                 }
 
-                beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RefreshConnections));
                 beginInitializationBuffer.AddJobHandleForProducer(Dependency);
             }
 

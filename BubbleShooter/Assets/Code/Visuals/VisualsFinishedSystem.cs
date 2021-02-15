@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Bubbles;
 using Assets.Code.DOTS;
 using Assets.Code.Movement;
+using Assets.Code.Movement.Follow;
 using Unity.Entities;
 
 namespace Assets.Code.Visuals
@@ -11,8 +12,9 @@ namespace Assets.Code.Visuals
         {
             Any = new ComponentType[]
             {
-                typeof(MoveDownCmp),
-                typeof(BubbleIsShootingTagCmp)
+                typeof(MoveDownTagCmp),
+                typeof(BubbleIsShootingTagCmp),
+                typeof(IsMovingTagCmp)
             }
         };
         private EntityQuery visualsQuery;
@@ -26,19 +28,24 @@ namespace Assets.Code.Visuals
         protected override void OnUpdate()
         {
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
+            //var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
 
             bool visualsInProgress = HasSingleton<VisualsInProgressTagCmp>();
+            bool anyVisualsPlaying = !visualsQuery.IsEmpty;
 
-            if (!visualsInProgress && !visualsQuery.IsEmpty)
+            if (!visualsInProgress && anyVisualsPlaying)
             {
                 beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.VisualsInProgress));
             }
 
-            if (visualsInProgress && visualsQuery.IsEmpty)
+            if (visualsInProgress && !anyVisualsPlaying)
             {
-                endSimBuffer.DestroyEntity(GetSingletonEntity<VisualsInProgressTagCmp>());
+                beginSimBuffer.DestroyEntity(GetSingletonEntity<VisualsInProgressTagCmp>());
+                beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.AllVisualsFinished));
             }
+
+            beginSimulationBuffer.AddJobHandleForProducer(Dependency);
+            //endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

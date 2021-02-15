@@ -10,8 +10,8 @@ namespace Assets.Code.Movement.Follow
         protected override void OnUpdate()
         {
             float dt = Time.DeltaTime;
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             Entities
-                .WithoutBurst()
                 .ForEach((Entity e, ref Translation translation, in FollowEntityCmp followCmp) =>
                 {
                     float distance = math.distance(translation.Value, followCmp.TargetPosition);
@@ -21,13 +21,17 @@ namespace Assets.Code.Movement.Follow
                     if (moveDistance >= distance)
                     {
                         translation.Value = followCmp.TargetPosition;
+                        beginInitBuffer.RemoveComponent<IsMovingTagCmp>(e);
                     }
                     else
                     {
                         translation.Value += moveVector;
+                        beginInitBuffer.AddComponent<IsMovingTagCmp>(e);
                     }
                 })
-                .Run();
+                .Schedule();
+
+            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }
