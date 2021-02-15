@@ -58,13 +58,21 @@ namespace Assets.Code.Bubbles.Solving
                         break;
                     }
                 }
+                //we need to merge bubbles top-most and to still have connection to some bubble
                 if (!foundNextIteration)
                 {
                     var sortedEntities = bubblesWithSameNumber.Keys.OrderBy((node) => -EntityManager.GetComponentData<Translation>(node).Value.y).ToList();
-
-                    Entity topMostEntity = sortedEntities[0];
-                    beginInitBuffer.SetComponent(topMostEntity, new NumberCmp { Value = outputNumber });
-                    bubblesWithSameNumber.Remove(topMostEntity);
+                    Entity topMostEntityWithNeighbour = Entity.Null;
+                    for (int i = 0; i < sortedEntities.Count; i++)
+                    {
+                        if (bubblesWithSameNumber[sortedEntities[i]].Length > 0)
+                        {
+                            topMostEntityWithNeighbour = sortedEntities[i];
+                            break;
+                        }
+                    }
+                    beginInitBuffer.SetComponent(topMostEntityWithNeighbour, new NumberCmp { Value = outputNumber });
+                    bubblesWithSameNumber.Remove(topMostEntityWithNeighbour);
                 }
 
                 foreach (var entity in bubblesWithSameNumber.Keys)
