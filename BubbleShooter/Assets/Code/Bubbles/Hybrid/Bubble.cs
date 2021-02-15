@@ -1,4 +1,5 @@
-﻿using Assets.Code.Hybrid;
+﻿using Assets.Code.Bubbles.Nodes;
+using Assets.Code.Hybrid;
 using Assets.Code.Movement.Follow;
 using Unity.Entities;
 using Unity.Transforms;
@@ -24,8 +25,10 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.AddComponentData(entity, new BubbleCmp());
             entityManager.AddComponentData(entity, new NumberCmp());
             entityManager.AddComponentData(entity, new FollowEntityCmp { EntityToFollow = entityToFollow });
+            entityManager.AddSharedComponentData(entity, new Grid.Row.RowSharedCmp());
             entityManager.SetComponentData(entity, scale);
             entityManager.AddComponentObject(entity, transform);
+            entityManager.AddBuffer<NodeNeighboursCmp>(entity);
 
             entityManager.SetComponentData(entity, entityManager.GetComponentData<Translation>(entityToFollow));
         }
@@ -34,6 +37,11 @@ namespace Assets.Code.Bubbles.Hybrid
         {
             this.number = number;
             numberText.text = number.ToString();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            //Handles.Label(transform.position, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
         }
     }
 }

@@ -49,13 +49,29 @@ namespace Assets.Code.Physics
             return closestCell;
         }
 
-        public static Bubble[] GetNeighbouringBubbles(Vector3 position)
+        public static Bubble[] GetNeighbouringBubbles(Bubble bubble)
         {
-            Collider[] overlappingCells = UnityEngine.Physics.OverlapSphere(position, GameManager.CellDiameter, LayerMask.GetMask("Bubble"));
-            List<Bubble> bubbles = new List<Bubble>(overlappingCells.Length);
+            Collider[] overlappingCells = new Collider[6];
+            int cellsCount = UnityEngine.Physics.OverlapSphereNonAlloc(bubble.transform.position, GameManager.CellDiameter, overlappingCells, LayerMask.GetMask("Bubble"));
+            List<Bubble> bubbles = new List<Bubble>(cellsCount);
+            for (int i = 0; i < cellsCount; i++)
+            {
+                var bubbleComponent = overlappingCells[i].attachedRigidbody.GetComponent<Bubble>();
+                if (bubbleComponent != bubble)
+                {
+                    bubbles.Add(bubbleComponent);
+                }
+            }
+            return bubbles.ToArray();
+        }
+
+        public static Cell[] GetNeighbouringCells(Vector3 position)
+        {
+            Collider[] overlappingCells = UnityEngine.Physics.OverlapSphere(position, GameManager.CellDiameter, LayerMask.GetMask("Cell"));
+            List<Cell> bubbles = new List<Cell>(overlappingCells.Length);
             for (int i = 0; i < overlappingCells.Length; i++)
             {
-                bubbles.Add(overlappingCells[i].attachedRigidbody.GetComponent<Bubble>());
+                bubbles.Add(overlappingCells[i].attachedRigidbody.GetComponent<Cell>());
             }
             return bubbles.ToArray();
         }

@@ -8,16 +8,16 @@ namespace Assets.Code.DOTS
     {
         protected override void OnUpdate()
         {
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             Entities
                 .WithAll<JustSpawnedTagCmp>()
                 .ForEach((Entity e) =>
                 {
-                    endSimBuffer.RemoveComponent<JustSpawnedTagCmp>(e);
+                    beginInitBuffer.RemoveComponent<JustSpawnedTagCmp>(e);
                 })
                 .Schedule();
 
-            endSimulationBuffer.AddJobHandleForProducer(Dependency);
+            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

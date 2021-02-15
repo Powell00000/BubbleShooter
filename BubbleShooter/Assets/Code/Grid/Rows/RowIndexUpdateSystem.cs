@@ -5,7 +5,7 @@ using Unity.Entities;
 
 namespace Assets.Code.Grid.Rows
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     internal class RowIndexUpdateSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()
@@ -17,7 +17,6 @@ namespace Assets.Code.Grid.Rows
         protected override void OnUpdate()
         {
             var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             Entities
                 .WithoutBurst()
                 .WithNone<JustSpawnedTagCmp>()
@@ -28,12 +27,11 @@ namespace Assets.Code.Grid.Rows
                     {
                         beginInitBuffer.AddComponent(e, new DestroyTagCmp());
                     }
-                    endSimBuffer.SetSharedComponent(e, rowCmp);
+                    beginInitBuffer.SetSharedComponent(e, rowCmp);
                 })
                 .Run();
 
             beginInitializationBuffer.AddJobHandleForProducer(Dependency);
-            endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

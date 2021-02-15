@@ -4,6 +4,7 @@ using Unity.Entities;
 
 namespace Assets.Code.Grid.Spawn.Hybrid
 {
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     internal class RowSpawnSystem : CellSpawnSystem
     {
         [Zenject.Inject]
