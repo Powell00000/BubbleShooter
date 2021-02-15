@@ -101,7 +101,7 @@ namespace Assets.Code.Bubbles.Hybrid
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (!Application.isPlaying)
+            if (Application.isPlaying)
             {
                 Handles.Label(transform.position + Vector3.down * 0.1f, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
             }
