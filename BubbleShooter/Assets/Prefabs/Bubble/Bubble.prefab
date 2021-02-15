@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sphereCollider: {fileID: 5243712725359536973}
   numberText: {fileID: 3123974992351505194}
+  visualsParent: {fileID: 1883540068590211159}
 --- !u!54 &7598733969553825911
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -136,6 +137,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
+--- !u!1 &1883540068590211159 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 11227129674444420, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
+  m_PrefabInstance: {fileID: 1874709885541646035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3707088663992690015 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2987707116178250636, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
