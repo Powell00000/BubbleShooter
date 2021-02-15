@@ -1,5 +1,4 @@
 ﻿using Assets.Code.DOTS;
-using Assets.Code.Grid.Cells;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
@@ -10,7 +9,6 @@ namespace Assets.Code.Bubbles.Connections
         protected override void OnCreate()
         {
             base.OnCreate();
-            //RequireSingletonForUpdate<ConnectionsRefreshedTagCmp>();
         }
 
         protected override void OnUpdate()
@@ -20,21 +18,11 @@ namespace Assets.Code.Bubbles.Connections
             bool bubblesRemoved = false;
             Entities
                 .WithNone<HasConnectionWithTopRowTagCmp, DisconnectedBubbleTagCmp, DestroyTagCmp>()
-                .ForEach((Entity e, ref CellCmp cellCmp) =>
+                .ForEach((Entity e, ref BubbleCmp bubbleCmp) =>
                 {
-                    if (!cellCmp.IsEmpty)
-                    {
-                        //bubblesRemoved = true;
-                        beginSimBuffer.AddComponent(cellCmp.OccupyingEntity, new DisconnectedBubbleTagCmp());
-                    }
+                    beginSimBuffer.AddComponent(e, new DisconnectedBubbleTagCmp());
                 })
                 .Schedule();
-
-            //endSimBuffer.DestroyEntity(GetSingletonEntity<ConnectionsRefreshedTagCmp>());
-            if (bubblesRemoved)
-            {
-                //beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RefreshConnections));
-            }
 
             beginSimulationBuffer.AddJobHandleForProducer(Dependency);
             endSimulationBuffer.AddJobHandleForProducer(Dependency);

@@ -25,6 +25,7 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.AddComponentData(entity, new BubbleCmp());
             entityManager.AddComponentData(entity, new NumberCmp());
             entityManager.AddComponentData(entity, new FollowEntityCmp { EntityToFollow = entityToFollow });
+            entityManager.AddSharedComponentData(entity, new Grid.Row.RowSharedCmp());
             entityManager.SetComponentData(entity, scale);
             entityManager.AddComponentObject(entity, transform);
             entityManager.AddBuffer<NodeNeighboursCmp>(entity);

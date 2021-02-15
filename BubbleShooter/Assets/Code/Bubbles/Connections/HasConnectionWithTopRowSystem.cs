@@ -1,14 +1,14 @@
-﻿using Assets.Code.DOTS;
+﻿using Assets.Code.Bubbles.Nodes;
 using Assets.Code.Grid.Cells;
 using Assets.Code.Grid.Cells.Hybrid;
 using Assets.Code.Grid.Row;
-using Assets.Code.Physics;
 using System.Collections.Generic;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateAfter(typeof(BubbleNodeUpdateSystem))]
     internal class HasConnectionWithTopRowSystem : SystemBaseWithBarriers
     {
         private struct CellNode
@@ -19,7 +19,7 @@ namespace Assets.Code.Bubbles.Connections
 
         protected override void OnUpdate()
         {
-            Dictionary<Entity, CellNode> collectedCells = new Dictionary<Entity, CellNode>();
+            HashSet<Entity> collectedCells = new HashSet<Entity>();
 
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
@@ -27,42 +27,35 @@ namespace Assets.Code.Bubbles.Connections
                 .WithoutBurst()
                 .WithNone<HasConnectionWithTopRowTagCmp>()
                 .WithSharedComponentFilter(new RowSharedCmp { RowNumber = 1 })
-                .ForEach((Entity e, Cell cellMono) =>
+                .WithAll<BubbleCmp, NodeNeighboursCmp>()
+                .ForEach((Entity e) =>
                 {
-                    TraverseOccupiedCells(ref collectedCells, cellMono);
+                    TraverseOccupiedCells(ref collectedCells, e);
                 })
                 .Run();
 
             if (collectedCells.Count > 0)
             {
-                foreach (var item in collectedCells.Keys)
+                foreach (var entity in collectedCells)
                 {
-                    beginSimBuffer.AddComponent(item, new HasConnectionWithTopRowTagCmp());
+                    beginSimBuffer.AddComponent(entity, new HasConnectionWithTopRowTagCmp());
                 }
-                //beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.ConnectionsRefreshed));
                 beginSimulationBuffer.AddJobHandleForProducer(Dependency);
             }
         }
 
-        private void TraverseOccupiedCells(ref Dictionary<Entity, CellNode> collectedCells, Cell cell)
+        private void TraverseOccupiedCells(ref HashSet<Entity> collectedBubbles, Entity thisEntity)
         {
-            CellNode node = new CellNode
+            if (!collectedBubbles.Contains(thisEntity))
             {
-                CurrentCell = cell,
-                Neighbours = PhysicsEx.GetNeighbouringCells(cell.transform.position)
-            };
-
-            if (!collectedCells.ContainsKey(node.CurrentCell.Entity))
-            {
-                collectedCells.Add(node.CurrentCell.Entity, node);
+                collectedBubbles.Add(thisEntity);
             }
-
-            foreach (var item in node.Neighbours)
+            DynamicBuffer<NodeNeighboursCmp> neighbours = EntityManager.GetBuffer<NodeNeighboursCmp>(thisEntity);
+            foreach (var item in neighbours)
             {
-                CellCmp cellCmp = EntityManager.GetComponentData<CellCmp>(item.Entity);
-                if (!collectedCells.ContainsKey(item.Entity) && !cellCmp.IsEmpty)
+                if (!collectedBubbles.Contains(item.Neighbour))
                 {
-                    TraverseOccupiedCells(ref collectedCells, item);
+                    TraverseOccupiedCells(ref collectedBubbles, item.Neighbour);
                 }
             }
         }

@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Bubbles.Solving;
 using Assets.Code.DOTS;
 using Assets.Code.Grid.Cells;
+using Assets.Code.Grid.Row;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -44,6 +45,8 @@ namespace Assets.Code.Bubbles.Hybrid
                     {
                         beginInitBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
                     }
+
+                    beginInitBuffer.SetSharedComponent(bubble.Entity, EntityManager.GetSharedComponentData<RowSharedCmp>(e));
 
                     cellCmp.OccupyingEntity = bubble.Entity;
 
