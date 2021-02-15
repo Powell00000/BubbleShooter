@@ -5,7 +5,6 @@ using Unity.Entities;
 namespace Assets.Code.Bubbles.Connections
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [DisableAutoCreation]
     internal class MarkDisconnectedBubblesSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()
@@ -26,7 +25,7 @@ namespace Assets.Code.Bubbles.Connections
                     if (!cellCmp.IsEmpty)
                     {
                         bubblesRemoved = true;
-                        beginSimBuffer.AddComponent(cellCmp.OccupyingEntity, new DestroyTagCmp());
+                        beginSimBuffer.AddComponent(cellCmp.OccupyingEntity, new DisconnectedBubbleTagCmp());
                     }
                 })
                 .Run();

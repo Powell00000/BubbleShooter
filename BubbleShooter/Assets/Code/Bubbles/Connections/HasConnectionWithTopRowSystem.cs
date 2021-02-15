@@ -8,8 +8,7 @@ using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [DisableAutoCreation]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     internal class HasConnectionWithTopRowSystem : SystemBaseWithBarriers
     {
         private struct CellNode
@@ -22,7 +21,7 @@ namespace Assets.Code.Bubbles.Connections
         {
             Dictionary<Entity, CellNode> collectedCells = new Dictionary<Entity, CellNode>();
 
-            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
+            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
 
             Entities
                 .WithoutBurst()
@@ -38,10 +37,10 @@ namespace Assets.Code.Bubbles.Connections
             {
                 foreach (var item in collectedCells.Keys)
                 {
-                    beginInitBuffer.AddComponent(item, new HasConnectionWithTopRowTagCmp());
+                    beginSimBuffer.AddComponent(item, new HasConnectionWithTopRowTagCmp());
                 }
-                beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.ConnectionsRefreshed));
-                beginInitializationBuffer.AddJobHandleForProducer(Dependency);
+                //beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.ConnectionsRefreshed));
+                beginSimulationBuffer.AddJobHandleForProducer(Dependency);
             }
         }
 

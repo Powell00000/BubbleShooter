@@ -3,26 +3,28 @@
 namespace Assets.Code.Bubbles.Connections
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [DisableAutoCreation]
     internal class RemoveTopRowConnectionTagsSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()
         {
             base.OnCreate();
-            RequireSingletonForUpdate<RefreshConnectionsTagCmp>();
+            //RequireSingletonForUpdate<RefreshConnectionsTagCmp>();
         }
         protected override void OnUpdate()
         {
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             Entities
                 .WithAll<HasConnectionWithTopRowTagCmp>()
                 .ForEach((Entity e) =>
                 {
-                    endSimBuffer.RemoveComponent<HasConnectionWithTopRowTagCmp>(e);
+                    beginInitBuffer.RemoveComponent<HasConnectionWithTopRowTagCmp>(e);
                 })
                 .Schedule();
 
-            EntityManager.DestroyEntity(GetSingletonEntity<RefreshConnectionsTagCmp>());
+            //endSimBuffer.DestroyEntity(GetSingletonEntity<RefreshConnectionsTagCmp>());
+
+            beginInitializationBuffer.AddJobHandleForProducer(Dependency);
             endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }

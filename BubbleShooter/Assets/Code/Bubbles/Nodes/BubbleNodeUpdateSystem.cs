@@ -2,11 +2,10 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Assets.Code.Bubbles.Nodes
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     internal class BubbleNodeUpdateSystem : SystemBaseWithBarriers
     {
         private EntityQuery allBubbles;
