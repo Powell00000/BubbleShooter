@@ -19,10 +19,10 @@ namespace Assets.Code.Movement
             {
                 Entities
                     .WithAll<CellCmp>()
-                    .WithNone<MoveDownCmp>()
+                    .WithNone<MoveDownTagCmp>()
                     .ForEach((Entity e) =>
                     {
-                        beginSimBuffer.AddComponent(e, new MoveDownCmp { TimeLeft = 0.2f });
+                        beginSimBuffer.AddComponent(e, new MoveDownTagCmp { });
                     })
                     .Schedule();
 
@@ -32,10 +32,10 @@ namespace Assets.Code.Movement
 
 
             Entities
-                .ForEach((Entity e, ref MoveDownCmp moveDownCmp, ref Translation translation, in CellCmp cellCmp) =>
+                .ForEach((Entity e, ref MoveDownTagCmp moveDownCmp, ref Translation translation, in CellCmp cellCmp) =>
                 {
                     translation.Value -= new float3(0, cellCmp.Diameter, 0);
-                    endSimBuffer.RemoveComponent<MoveDownCmp>(e);
+                    endSimBuffer.RemoveComponent<MoveDownTagCmp>(e);
                 })
                 .Schedule();
 

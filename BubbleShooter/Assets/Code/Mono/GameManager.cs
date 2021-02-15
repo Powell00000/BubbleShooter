@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
     }
 
     [ContextMenu("Spawn 1 row")]
-    private void SpawnRow()
+    public void SpawnRow()
     {
         var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
         World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(entity, new SpawnRowCmp
@@ -103,6 +103,9 @@ public class GameManager : MonoBehaviour
             Position = spawnPosition.position
         });
         IsEvenRow = !IsEvenRow;
+
+        var populateRowEntity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
+        World.DefaultGameObjectInjectionWorld.EntityManager.AddComponentData(populateRowEntity, new PopulateRowWithBubbles { Row = 0, RandomizeNumbers = true });
     }
 
     [ContextMenu("Spawn init rows")]

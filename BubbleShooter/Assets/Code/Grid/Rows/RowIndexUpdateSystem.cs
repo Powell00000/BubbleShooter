@@ -19,7 +19,7 @@ namespace Assets.Code.Grid.Rows
             var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
             Entities
                 .WithoutBurst()
-                .WithNone<JustSpawnedTagCmp>()
+                .WithNone<JustSpawnedTagCmp, DestroyTagCmp>()
                 .ForEach((Entity e, RowSharedCmp rowCmp) =>
                 {
                     rowCmp.RowNumber++;

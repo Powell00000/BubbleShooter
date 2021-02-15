@@ -1,4 +1,5 @@
-﻿using Assets.Code.Grid.Row;
+﻿using Assets.Code.Grid.Cells;
+using Assets.Code.Grid.Row;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles
@@ -27,6 +28,7 @@ namespace Assets.Code.Bubbles
         {
             Entities
                 .WithSharedComponentFilter(new RowSharedCmp { RowNumber = populateRowCmp.Row })
+                .WithAll<CellCmp>()
                 .ForEach((Entity e) =>
                 {
                     ecb.AddComponent(e, new SpawnBubbleCmp() { RandomizeNumber = populateRowCmp.RandomizeNumbers });
