@@ -30,6 +30,9 @@ namespace Assets.Code.Bubbles.Hybrid
         [SerializeField]
         private ParticleSystem explosionParticles;
 
+        [SerializeField]
+        private Rigidbody rgbd;
+
         private int visualsPlaying = 0;
         private int number;
 
@@ -85,6 +88,30 @@ namespace Assets.Code.Bubbles.Hybrid
                 RemoveVisuals();
                 entityManager.AddComponentData(entity, new DestroyTagCmp());
             });
+        }
+
+        public void StopAllVisuals()
+        {
+            if (visualsPlaying > 0)
+            {
+                entityManager.RemoveComponent<IsAnimatingTagCmp>(entity);
+            }
+
+            visualsPlaying = 0;
+        }
+
+        public void DropBubble()
+        {
+            entityManager.RemoveComponent<FollowEntityCmp>(entity);
+            entityManager.RemoveComponent<CopyTransformToGameObject>(entity);
+            entityManager.AddComponentData(entity, new BubbleIsDroppingTagCmp());
+            entityManager.AddComponentData(entity, new CopyTransformFromGameObject());
+
+            AddVisuals();
+            float angle = Random.Range(-45f, 45f);
+            Vector3 nudgeVector = Quaternion.AngleAxis(angle, Vector3.forward) * Vector3.up;
+            rgbd.isKinematic = false;
+            rgbd.AddForce(nudgeVector, ForceMode.Impulse);
         }
 
         public void RefreshNumber(int number)
