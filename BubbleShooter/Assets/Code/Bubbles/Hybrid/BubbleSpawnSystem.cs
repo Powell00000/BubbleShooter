@@ -1,13 +1,15 @@
 ﻿using Assets.Code.Bubbles.Solving;
 using Assets.Code.Grid.Cells;
 using Assets.Code.Grid.Row;
+using Assets.Code.Grid.Spawn.Hybrid;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Assets.Code.Bubbles.Hybrid
 {
-    [UpdateInGroup(typeof(PresentationSystemGroup))]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateAfter(typeof(RowSpawnSystem))]
     internal class BubbleSpawnSystem : SystemBaseWithBarriers
     {
         [Zenject.Inject]
@@ -42,7 +44,7 @@ namespace Assets.Code.Bubbles.Hybrid
                         beginInitBuffer.SetComponent(bubble.Entity, new NumberCmp { Value = spawnBubbleCmp.Number });
                     }
 
-                    beginInitBuffer.SetSharedComponent(bubble.Entity, EntityManager.GetSharedComponentData<RowSharedCmp>(e));
+                    beginInitBuffer.SetComponent(bubble.Entity, EntityManager.GetComponentData<RowSharedCmp>(e));
 
                     cellCmp.OccupyingEntity = bubble.Entity;
 

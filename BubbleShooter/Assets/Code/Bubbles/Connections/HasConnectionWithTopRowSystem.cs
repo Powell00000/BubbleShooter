@@ -1,5 +1,4 @@
-﻿using Assets.Code.Bubbles.Explosion;
-using Assets.Code.Bubbles.Nodes;
+﻿using Assets.Code.Bubbles.Nodes;
 using Assets.Code.DOTS;
 using Assets.Code.Grid.Cells.Hybrid;
 using Assets.Code.Grid.Row;
@@ -32,12 +31,14 @@ namespace Assets.Code.Bubbles.Connections
             Entities
                 .WithoutBurst()
                 .WithNone<HasConnectionWithTopRowTagCmp>()
-                .WithSharedComponentFilter(new RowSharedCmp { RowNumber = 1 })
                 .WithAll<BubbleCmp, NodeNeighboursCmp>()
                 .WithNone<DestroyTagCmp>()
-                .ForEach((Entity e) =>
+                .ForEach((Entity e, in RowSharedCmp rowCmp) =>
                 {
-                    TraverseOccupiedCells(ref collectedCells, e);
+                    if (rowCmp.RowNumber == 1)
+                    {
+                        TraverseOccupiedCells(ref collectedCells, e);
+                    }
                 })
                 .Run();
 
@@ -45,7 +46,8 @@ namespace Assets.Code.Bubbles.Connections
             {
                 foreach (var entity in collectedCells)
                 {
-                    beginSimBuffer.AddComponent(entity, new HasConnectionWithTopRowTagCmp());
+                    //beginSimBuffer.AddComponent(entity, new HasConnectionWithTopRowTagCmp());
+                    EntityManager.AddComponentData(entity, new HasConnectionWithTopRowTagCmp());
                 }
                 beginSimulationBuffer.AddJobHandleForProducer(Dependency);
             }

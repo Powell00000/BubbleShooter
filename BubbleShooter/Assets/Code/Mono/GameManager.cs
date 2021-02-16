@@ -1,10 +1,12 @@
 using Assets.Code.Bubbles;
+using Assets.Code.DOTS;
 using Assets.Code.Grid.Spawn;
 using Assets.Code.Grid.Spawn.Hybrid;
 using Assets.Code.Mono;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,6 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Transform topWall;
 
+    [SerializeField]
+    private EndGameView endGameView;
+
     [Zenject.Inject]
     private Cannon cannon;
 
@@ -28,6 +33,8 @@ public class GameManager : MonoBehaviour
 
     [Zenject.Inject]
     private CameraBounds cameraBounds;
+
+    public System.Action OnGameEnded;
 
     private Unity.Mathematics.Random random;
 
@@ -49,10 +56,16 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        StartGame();
+    }
+
+    private void StartGame()
+    {
         gameSettingStatic = gameSettings;
         random = new Unity.Mathematics.Random(2);
         Application.targetFrameRate = 60;
         IsEvenRow = true;
+        endGameView.Initialize(this);
         InitializeCameraBounds();
         SetupWalls();
         CalculateCellDiameter();
@@ -61,6 +74,12 @@ public class GameManager : MonoBehaviour
         SpawnInitBubbles();
         InitializeCannon();
         initialized = true;
+    }
+
+    public void RestartGame()
+    {
+        World.DisposeAllWorlds();
+        SceneManager.LoadScene(0);
     }
 
     public int GetRandomBubbleNumber()
@@ -81,7 +100,8 @@ public class GameManager : MonoBehaviour
     private void CalculateMaxRowsCount()
     {
         float height = Vector3.Distance(cameraBounds.Top, cameraBounds.Bottom);
-        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter) - 3;
+        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter);
+        maxRowsCount = 5;
 
         Debug.Log($"{nameof(maxRowsCount)} = {maxRowsCount}");
     }
@@ -103,7 +123,7 @@ public class GameManager : MonoBehaviour
     {
         World.DefaultGameObjectInjectionWorld.QuitUpdate = true;
         Debug.LogError("game ended");
-        cannon.OnGameEnded();
+        OnGameEnded?.Invoke();
     }
 
     [ContextMenu("Spawn 1 row")]

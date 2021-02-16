@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Bubbles;
 using Assets.Code.DOTS;
+using Assets.Code.Gameplay;
 using Assets.Code.Grid.Spawn;
 using Assets.Code.Movement;
 using Assets.Code.Movement.Follow;
@@ -7,6 +8,7 @@ using Unity.Entities;
 
 namespace Assets.Code.Visuals
 {
+    [UpdateInGroup(typeof(PresentationSystemGroup))]
     internal class VisualsFinishedSystem : SystemBaseWithBarriers
     {
         private EntityQueryDesc visualsQueryDesc = new EntityQueryDesc
@@ -20,6 +22,7 @@ namespace Assets.Code.Visuals
                 typeof(SpawnBubbleCmp),
                 typeof(JustSpawnedTagCmp),
                 typeof(SpawnRowCmp),
+                typeof(SpawnNextRowTagCmp),
             }
         };
         private EntityQuery visualsQuery;

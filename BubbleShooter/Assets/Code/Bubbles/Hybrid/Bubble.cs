@@ -47,7 +47,8 @@ namespace Assets.Code.Bubbles.Hybrid
             entityManager.AddComponentData(entity, new BubbleCmp());
             entityManager.AddComponentData(entity, new NumberCmp());
             entityManager.AddComponentData(entity, new FollowEntityCmp { EntityToFollow = entityToFollow });
-            entityManager.AddSharedComponentData(entity, new Grid.Row.RowSharedCmp());
+            entityManager.AddComponentData(entity, new Grid.Row.RowSharedCmp());
+            entityManager.AddComponentData(entity, new HasConnectionWithTopRowTagCmp());
             entityManager.SetComponentData(entity, scale);
             entityManager.AddComponentObject(entity, transform);
             entityManager.AddBuffer<NodeNeighboursCmp>(entity);
@@ -140,7 +141,7 @@ namespace Assets.Code.Bubbles.Hybrid
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && World.DefaultGameObjectInjectionWorld != null)
             {
                 Handles.Label(transform.position + Vector3.down * 0.1f, $"Has connection: {entityManager.HasComponent<HasConnectionWithTopRowTagCmp>(entity)}");
             }

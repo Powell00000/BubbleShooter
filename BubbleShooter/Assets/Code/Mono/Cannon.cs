@@ -1,8 +1,10 @@
 using Assets.Code.Bubbles.Mono;
+using Assets.Code.Grid.Cells;
 using Assets.Code.Mono;
 using Assets.Code.Physics;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 using static Assets.Code.Physics.PhysicsEx;
 
@@ -34,6 +36,7 @@ public class Cannon : MonoBehaviour
     private GameManager gameManager;
 
     private bool spawnBubble;
+    private bool canShoot = false;
 
     public void Initialize(GameManager gameManager)
     {
@@ -41,17 +44,22 @@ public class Cannon : MonoBehaviour
         this.gameManager = gameManager;
         PreloadNextNumber();
         StartCoroutine(ShootLineRoutine());
+
+        gameManager.OnGameEnded += OnGameEnded;
     }
 
     public void OnGameEnded()
     {
         StopAllCoroutines();
-        shootLine.SetPositions(null);
+        shootLine.enabled = false;
     }
 
     public void ShootBubble()
     {
-        spawnBubble = true;
+        if (canShoot)
+        {
+            spawnBubble = true;
+        }
     }
 
     private IEnumerator ShootLineRoutine()
@@ -91,6 +99,7 @@ public class Cannon : MonoBehaviour
             yield return null;
 
             bool exitLoop = false;
+            canShoot = false;
             while (!exitLoop)
             {
                 CastResult castResult = PhysicsEx.Cast(currentRayDirection, float.MaxValue, currentRayPosition);
@@ -100,16 +109,28 @@ public class Cannon : MonoBehaviour
                     currentRayPosition = castResult.ContactPoint;
                     currentRayDirection = castResult.ReflectedDirection;
 
-                    if (castResult.FoundCell != null)
+                    if (castResult.FinalObjectHit)
                     {
                         exitLoop = true;
-                        circle.transform.position = castResult.FoundCell.transform.position;
-                        circle.transform.localScale = Vector3.one * GameManager.CellDiameter;
                     }
+
+                    if (castResult.FoundCell != null)
+                    {
+                        CellCmp cellCmp = World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<CellCmp>(castResult.FoundCell.Entity);
+                        if (cellCmp.IsEmpty)
+                        {
+                            canShoot = true;
+                            circle.transform.position = castResult.FoundCell.transform.position;
+                            circle.transform.localScale = Vector3.one * GameManager.CellDiameter;
+                        }
+                    }
+
                     points.Add(currentRayPosition);
                 }
 
             }
+
+            circle.gameObject.SetActive(canShoot);
 
             shootLine.positionCount = points.Count;
 
@@ -122,6 +143,8 @@ public class Cannon : MonoBehaviour
                     Debug.DrawLine(points[i], points[i + 1], Color.red);
                 }
             }
+
+            shootLine.startColor = shootLine.endColor = canShoot ? Color.green : Color.red;
 
             yield return null;
 

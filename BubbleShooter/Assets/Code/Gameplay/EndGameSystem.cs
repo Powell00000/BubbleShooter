@@ -13,15 +13,17 @@ namespace Assets.Code.Gameplay
 
         protected override void OnUpdate()
         {
+            bool gameEnded = false;
 
             Entities
                 .WithoutBurst()
                 .WithAll<BubbleCmp>()
                 .ForEach((Entity e, RowSharedCmp rowCmp) =>
                 {
-                    if (rowCmp.RowNumber >= GameManager.MaxRowsCount)
+                    if (rowCmp.RowNumber >= GameManager.MaxRowsCount && gameEnded == false)
                     {
                         gameManager.EndGame();
+                        gameEnded = true;
                     }
                 })
                 .Run();
@@ -31,12 +33,14 @@ namespace Assets.Code.Gameplay
                 .WithAll<DestroyTagCmp>()
                 .ForEach((Entity e, in CellCmp cellCmp) =>
                 {
-                    if (cellCmp.IsEmpty == false)
+                    if (cellCmp.IsEmpty == false && gameEnded == false)
                     {
                         gameManager.EndGame();
+                        gameEnded = true;
                     }
                 })
                 .Run();
+
         }
     }
 }

@@ -54,6 +54,11 @@ namespace Assets.Code.DOTS
         {
             ComponentType.ReadOnly<SolverFinishedTagCmp>(),
         };
+
+        public static ComponentType[] DestroyAll => new ComponentType[]
+        {
+            ComponentType.ReadOnly<DestroyAllTagCmp>(),
+        };
     }
 
 }

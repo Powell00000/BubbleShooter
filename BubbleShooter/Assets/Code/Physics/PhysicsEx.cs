@@ -14,6 +14,7 @@ namespace Assets.Code.Physics
             public Vector3 ReflectedDirection;
             public Vector3 ContactPoint;
             public Cell FoundCell;
+            public bool FinalObjectHit;
         }
 
         public static CastResult Cast(Vector3 direction, float distance, Vector3 position)
@@ -34,6 +35,7 @@ namespace Assets.Code.Physics
                 //or we will hit upper wall, and we also need to select a cell to occupy
                 if (raycastHit.rigidbody.gameObject.layer == LayerMask.NameToLayer("Bubble") || raycastHit.rigidbody.gameObject.name == "TopWall")
                 {
+                    castResult.FinalObjectHit = true;
                     Cell cell = GetClosestCell(castResult.ContactPoint, radius);
                     castResult.FoundCell = cell;
                 }
