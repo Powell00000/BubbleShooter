@@ -26,6 +26,7 @@ namespace Assets.Code.Hybrid
 
         public void Destroy()
         {
+            //entityManager.DestroyEntity(entity);
             Destroy(gameObject);
         }
     }

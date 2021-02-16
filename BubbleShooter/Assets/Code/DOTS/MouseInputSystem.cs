@@ -6,7 +6,7 @@ namespace Assets.Code.DOTS
 {
     [AlwaysUpdateSystem]
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    internal class InputSystem : SystemBase
+    internal class MouseInputSystem : SystemBase
     {
         [Zenject.Inject]
         private Cannon cannon;

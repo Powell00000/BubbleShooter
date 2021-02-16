@@ -1,19 +1,18 @@
-﻿using Unity.Entities;
+﻿using Assets.Code.Visuals;
+using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     internal class RemoveTopRowConnectionTagsSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()
         {
             base.OnCreate();
-            //RequireSingletonForUpdate<RefreshConnectionsTagCmp>();
         }
         protected override void OnUpdate()
         {
             var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             Entities
                 .WithAll<HasConnectionWithTopRowTagCmp>()
                 .ForEach((Entity e) =>
@@ -25,7 +24,6 @@ namespace Assets.Code.Bubbles.Connections
             //endSimBuffer.DestroyEntity(GetSingletonEntity<RefreshConnectionsTagCmp>());
 
             beginInitializationBuffer.AddJobHandleForProducer(Dependency);
-            endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }

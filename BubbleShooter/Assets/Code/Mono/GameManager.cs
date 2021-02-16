@@ -1,10 +1,12 @@
 using Assets.Code.Bubbles;
+using Assets.Code.DOTS;
 using Assets.Code.Grid.Spawn;
 using Assets.Code.Grid.Spawn.Hybrid;
 using Assets.Code.Mono;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,6 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Transform topWall;
 
+    [SerializeField]
+    private EndGameView endGameView;
+
     [Zenject.Inject]
     private Cannon cannon;
 
@@ -29,6 +34,8 @@ public class GameManager : MonoBehaviour
     [Zenject.Inject]
     private CameraBounds cameraBounds;
 
+    public System.Action OnGameEnded;
+
     private Unity.Mathematics.Random random;
 
     public bool IsEvenRow { get; set; }
@@ -36,16 +43,35 @@ public class GameManager : MonoBehaviour
     private static float calculatedCellDiameter;
     private static bool initialized = false;
     private static int maxRowsCount;
+    private static GameSettings gameSettingStatic;
 
     public static float CellDiameter => calculatedCellDiameter;
     public static bool Initialized => initialized;
     public static int MaxRowsCount => maxRowsCount;
 
+    public static Color GetColorForNumber(int number)
+    {
+        return gameSettingStatic.GetColorForNumber(number);
+    }
+
     private void Start()
     {
+        if (World.DefaultGameObjectInjectionWorld == null)
+        {
+            RestartGame();
+            return;
+        }
+
+        StartGame();
+    }
+
+    private void StartGame()
+    {
+        gameSettingStatic = gameSettings;
         random = new Unity.Mathematics.Random(2);
         Application.targetFrameRate = 60;
         IsEvenRow = true;
+        endGameView.Initialize(this);
         InitializeCameraBounds();
         SetupWalls();
         CalculateCellDiameter();
@@ -54,6 +80,12 @@ public class GameManager : MonoBehaviour
         SpawnInitBubbles();
         InitializeCannon();
         initialized = true;
+    }
+
+    public void RestartGame()
+    {
+        World.DisposeAllWorlds();
+        SceneManager.LoadScene(0);
     }
 
     public int GetRandomBubbleNumber()
@@ -74,7 +106,7 @@ public class GameManager : MonoBehaviour
     private void CalculateMaxRowsCount()
     {
         float height = Vector3.Distance(cameraBounds.Top, cameraBounds.Bottom);
-        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter);
+        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter) - 3;
 
         Debug.Log($"{nameof(maxRowsCount)} = {maxRowsCount}");
     }
@@ -90,6 +122,13 @@ public class GameManager : MonoBehaviour
         rightWall.position = cameraBounds.Right;
         topWall.position = cameraBounds.Top;
         spawnPosition.position = cameraBounds.Top;
+    }
+
+    public void EndGame()
+    {
+        World.DefaultGameObjectInjectionWorld.QuitUpdate = true;
+        Debug.LogError("game ended");
+        OnGameEnded?.Invoke();
     }
 
     [ContextMenu("Spawn 1 row")]

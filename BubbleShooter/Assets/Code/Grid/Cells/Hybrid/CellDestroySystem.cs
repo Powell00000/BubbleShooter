@@ -11,6 +11,7 @@ namespace Assets.Code.Grid.Cells.Hybrid
             Entities
                 .WithoutBurst()
                 .WithAll<DestroyTagCmp>()
+                .WithStructuralChanges()
                 .ForEach((Entity e, Cell cellMono) =>
                 {
                     cellMono.Destroy();

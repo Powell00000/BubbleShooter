@@ -27,11 +27,13 @@ namespace Assets.Code.Bubbles
         private void MarkCellsToSpawnBubbles(PopulateRowWithBubbles populateRowCmp, EntityCommandBuffer ecb)
         {
             Entities
-                .WithSharedComponentFilter(new RowSharedCmp { RowNumber = populateRowCmp.Row })
                 .WithAll<CellCmp>()
-                .ForEach((Entity e) =>
+                .ForEach((Entity e, in RowSharedCmp rowCmp) =>
                 {
-                    ecb.AddComponent(e, new SpawnBubbleCmp() { RandomizeNumber = populateRowCmp.RandomizeNumbers });
+                    if (rowCmp.RowNumber == populateRowCmp.Row)
+                    {
+                        ecb.AddComponent(e, new SpawnBubbleCmp() { RandomizeNumber = populateRowCmp.RandomizeNumbers });
+                    }
                 })
                 .Schedule();
         }

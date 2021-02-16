@@ -13,6 +13,9 @@ namespace Assets.Code.Bubbles.Mono
         [SerializeField]
         private TMPro.TMP_Text numberText;
 
+        [SerializeField]
+        private SpriteRenderer sprite;
+
         private Vector3 direction;
         private float speed = 10;
         private Entity bubbleIsShootingTagEntity;
@@ -27,6 +30,8 @@ namespace Assets.Code.Bubbles.Mono
         {
             this.number = number;
             numberText.text = number.ToString();
+
+            sprite.color = GameManager.GetColorForNumber(number);
         }
 
         public void SetDirection(Vector3 direction)

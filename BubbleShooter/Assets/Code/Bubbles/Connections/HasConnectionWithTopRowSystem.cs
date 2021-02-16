@@ -1,5 +1,5 @@
 ﻿using Assets.Code.Bubbles.Nodes;
-using Assets.Code.Grid.Cells;
+using Assets.Code.DOTS;
 using Assets.Code.Grid.Cells.Hybrid;
 using Assets.Code.Grid.Row;
 using System.Collections.Generic;
@@ -17,6 +17,11 @@ namespace Assets.Code.Bubbles.Connections
             public Cell[] Neighbours;
         }
 
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+        }
+
         protected override void OnUpdate()
         {
             HashSet<Entity> collectedCells = new HashSet<Entity>();
@@ -26,11 +31,14 @@ namespace Assets.Code.Bubbles.Connections
             Entities
                 .WithoutBurst()
                 .WithNone<HasConnectionWithTopRowTagCmp>()
-                .WithSharedComponentFilter(new RowSharedCmp { RowNumber = 1 })
                 .WithAll<BubbleCmp, NodeNeighboursCmp>()
-                .ForEach((Entity e) =>
+                .WithNone<DestroyTagCmp>()
+                .ForEach((Entity e, in RowSharedCmp rowCmp) =>
                 {
-                    TraverseOccupiedCells(ref collectedCells, e);
+                    if (rowCmp.RowNumber == 1)
+                    {
+                        TraverseOccupiedCells(ref collectedCells, e);
+                    }
                 })
                 .Run();
 
@@ -38,7 +46,8 @@ namespace Assets.Code.Bubbles.Connections
             {
                 foreach (var entity in collectedCells)
                 {
-                    beginSimBuffer.AddComponent(entity, new HasConnectionWithTopRowTagCmp());
+                    //beginSimBuffer.AddComponent(entity, new HasConnectionWithTopRowTagCmp());
+                    EntityManager.AddComponentData(entity, new HasConnectionWithTopRowTagCmp());
                 }
                 beginSimulationBuffer.AddJobHandleForProducer(Dependency);
             }
@@ -53,7 +62,7 @@ namespace Assets.Code.Bubbles.Connections
             DynamicBuffer<NodeNeighboursCmp> neighbours = EntityManager.GetBuffer<NodeNeighboursCmp>(thisEntity);
             foreach (var item in neighbours)
             {
-                if (!collectedBubbles.Contains(item.Neighbour))
+                if (!collectedBubbles.Contains(item.Neighbour) && !EntityManager.HasComponent<DestroyTagCmp>(item.Neighbour))
                 {
                     TraverseOccupiedCells(ref collectedBubbles, item.Neighbour);
                 }

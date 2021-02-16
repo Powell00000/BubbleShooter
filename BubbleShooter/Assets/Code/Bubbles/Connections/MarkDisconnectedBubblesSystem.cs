@@ -1,23 +1,24 @@
-﻿using Assets.Code.DOTS;
+﻿using Assets.Code.Bubbles.Explosion;
+using Assets.Code.DOTS;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     internal class MarkDisconnectedBubblesSystem : SystemBaseWithBarriers
     {
         protected override void OnCreate()
         {
             base.OnCreate();
+            //RequireSingletonForUpdate<AllVisualsFinishedTagCmp>();
         }
 
         protected override void OnUpdate()
         {
             var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
-            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
-            bool bubblesRemoved = false;
             Entities
                 .WithNone<HasConnectionWithTopRowTagCmp, DisconnectedBubbleTagCmp, DestroyTagCmp>()
+                .WithNone<ExplodeTagCmp>()
                 .ForEach((Entity e, ref BubbleCmp bubbleCmp) =>
                 {
                     beginSimBuffer.AddComponent(e, new DisconnectedBubbleTagCmp());
@@ -25,7 +26,6 @@ namespace Assets.Code.Bubbles.Connections
                 .Schedule();
 
             beginSimulationBuffer.AddJobHandleForProducer(Dependency);
-            endSimulationBuffer.AddJobHandleForProducer(Dependency);
         }
     }
 }
