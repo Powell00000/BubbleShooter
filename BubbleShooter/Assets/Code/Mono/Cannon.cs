@@ -29,6 +29,9 @@ public class Cannon : MonoBehaviour
     private SpriteRenderer circle;
 
     [SerializeField]
+    private SpriteRenderer cannonSprite;
+
+    [SerializeField]
     private TMPro.TMP_Text nextNumberText;
 
     private int nextNumber;
@@ -127,7 +130,10 @@ public class Cannon : MonoBehaviour
 
                     points.Add(currentRayPosition);
                 }
-
+                else
+                {
+                    exitLoop = true;
+                }
             }
 
             circle.gameObject.SetActive(canShoot);
@@ -165,5 +171,7 @@ public class Cannon : MonoBehaviour
     {
         nextNumber = gameManager.GetRandomBubbleNumber();
         nextNumberText.text = nextNumber.ToString();
+
+        circle.color = cannonSprite.color = GameManager.GetColorForNumber(nextNumber);
     }
 }

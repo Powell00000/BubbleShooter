@@ -18,7 +18,7 @@ namespace Assets.Code.Gameplay
             Entities
                 .WithoutBurst()
                 .WithAll<BubbleCmp>()
-                .ForEach((Entity e, RowSharedCmp rowCmp) =>
+                .ForEach((Entity e, in RowSharedCmp rowCmp) =>
                 {
                     if (rowCmp.RowNumber >= GameManager.MaxRowsCount && gameEnded == false)
                     {

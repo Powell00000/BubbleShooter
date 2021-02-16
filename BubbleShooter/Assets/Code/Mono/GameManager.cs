@@ -56,6 +56,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (World.DefaultGameObjectInjectionWorld == null)
+        {
+            RestartGame();
+            return;
+        }
+
         StartGame();
     }
 
@@ -100,8 +106,7 @@ public class GameManager : MonoBehaviour
     private void CalculateMaxRowsCount()
     {
         float height = Vector3.Distance(cameraBounds.Top, cameraBounds.Bottom);
-        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter);
-        maxRowsCount = 5;
+        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter) - 3;
 
         Debug.Log($"{nameof(maxRowsCount)} = {maxRowsCount}");
     }

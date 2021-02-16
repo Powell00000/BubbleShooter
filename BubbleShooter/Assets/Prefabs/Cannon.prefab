@@ -316,6 +316,7 @@ MonoBehaviour:
   shootPoint: {fileID: 1949761382518810989}
   shootLine: {fileID: 0}
   circle: {fileID: 0}
+  cannonSprite: {fileID: 32357968}
   nextNumberText: {fileID: 113846915}
 --- !u!1 &5021823004152176137
 GameObject:

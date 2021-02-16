@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game settings")]
@@ -13,7 +14,7 @@ public class GameSettings : ScriptableObject
 
     public Color GetColorForNumber(int number)
     {
-        int index = (int)Mathf.Sqrt(number) - 1;
+        int index = (int)math.log2(number) - 1;
         index = Mathf.Clamp(index, 0, colors.Length - 1);
         return colors[index];
     }
