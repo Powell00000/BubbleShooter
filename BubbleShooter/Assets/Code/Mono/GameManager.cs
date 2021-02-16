@@ -36,13 +36,20 @@ public class GameManager : MonoBehaviour
     private static float calculatedCellDiameter;
     private static bool initialized = false;
     private static int maxRowsCount;
+    private static GameSettings gameSettingStatic;
 
     public static float CellDiameter => calculatedCellDiameter;
     public static bool Initialized => initialized;
     public static int MaxRowsCount => maxRowsCount;
 
+    public static Color GetColorForNumber(int number)
+    {
+        return gameSettingStatic.GetColorForNumber(number);
+    }
+
     private void Start()
     {
+        gameSettingStatic = gameSettings;
         random = new Unity.Mathematics.Random(2);
         Application.targetFrameRate = 60;
         IsEvenRow = true;
@@ -74,7 +81,7 @@ public class GameManager : MonoBehaviour
     private void CalculateMaxRowsCount()
     {
         float height = Vector3.Distance(cameraBounds.Top, cameraBounds.Bottom);
-        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter);
+        maxRowsCount = Mathf.FloorToInt(height / calculatedCellDiameter) - 3;
 
         Debug.Log($"{nameof(maxRowsCount)} = {maxRowsCount}");
     }
@@ -90,6 +97,13 @@ public class GameManager : MonoBehaviour
         rightWall.position = cameraBounds.Right;
         topWall.position = cameraBounds.Top;
         spawnPosition.position = cameraBounds.Top;
+    }
+
+    public void EndGame()
+    {
+        World.DefaultGameObjectInjectionWorld.QuitUpdate = true;
+        Debug.LogError("game ended");
+        cannon.OnGameEnded();
     }
 
     [ContextMenu("Spawn 1 row")]

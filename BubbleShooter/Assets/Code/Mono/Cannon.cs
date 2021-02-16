@@ -43,6 +43,12 @@ public class Cannon : MonoBehaviour
         StartCoroutine(ShootLineRoutine());
     }
 
+    public void OnGameEnded()
+    {
+        StopAllCoroutines();
+        shootLine.SetPositions(null);
+    }
+
     public void ShootBubble()
     {
         spawnBubble = true;

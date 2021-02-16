@@ -28,6 +28,9 @@ namespace Assets.Code.Bubbles.Hybrid
         private GameObject visuals;
 
         [SerializeField]
+        private SpriteRenderer sprite;
+
+        [SerializeField]
         private ParticleSystem explosionParticles;
 
         [SerializeField]
@@ -80,7 +83,7 @@ namespace Assets.Code.Bubbles.Hybrid
 
         public void Explode()
         {
-            entityManager.RemoveComponent<ExplodeTagCmp>(entity);
+            //entityManager.RemoveComponent<ExplodeTagCmp>(entity);
             AddVisuals();
             explosionParticles.Play();
             visuals.transform.DOScale(Vector3.zero, explosionParticles.main.startLifetime.constant).OnComplete(() =>
@@ -114,15 +117,24 @@ namespace Assets.Code.Bubbles.Hybrid
             rgbd.AddForce(nudgeVector, ForceMode.Impulse);
         }
 
+        private void TweenColor()
+        {
+            AddVisuals();
+            sprite.DOColor(GameManager.GetColorForNumber(number), 0.4f).OnComplete(() => RemoveVisuals());
+        }
+
         public void RefreshNumber(int number)
         {
             if (this.number < number && !entityManager.HasComponent<JustSpawnedTagCmp>(entity))
             {
                 PingScale();
             }
-
-            this.number = number;
-            numberText.text = number.ToString();
+            if (this.number != number)
+            {
+                this.number = number;
+                numberText.text = number.ToString();
+                TweenColor();
+            }
         }
 
 #if UNITY_EDITOR

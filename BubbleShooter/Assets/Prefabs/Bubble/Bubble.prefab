@@ -49,6 +49,7 @@ MonoBehaviour:
   numberText: {fileID: 3123974992351505194}
   visualsParent: {fileID: 1883540068590211159}
   visuals: {fileID: 7046410306358087012}
+  sprite: {fileID: 966457508758788300}
   explosionParticles: {fileID: 6409586719651519895}
   rgbd: {fileID: 7598733969553825911}
 --- !u!54 &7598733969553825911
@@ -169,6 +170,11 @@ MonoBehaviour:
 --- !u!135 &5243712725359536973 stripped
 SphereCollider:
   m_CorrespondingSourceObject: {fileID: 5963089462293386654, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
+  m_PrefabInstance: {fileID: 1874709885541646035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &966457508758788300 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1688222376355751455, guid: 78d2760953d323a4b8e6eeb85478609e, type: 3}
   m_PrefabInstance: {fileID: 1874709885541646035}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8767040372100611574

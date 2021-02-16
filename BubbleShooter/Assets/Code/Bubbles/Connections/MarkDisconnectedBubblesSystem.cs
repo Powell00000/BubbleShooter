@@ -1,4 +1,5 @@
-﻿using Assets.Code.DOTS;
+﻿using Assets.Code.Bubbles.Explosion;
+using Assets.Code.DOTS;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Connections
@@ -17,6 +18,7 @@ namespace Assets.Code.Bubbles.Connections
             var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
             Entities
                 .WithNone<HasConnectionWithTopRowTagCmp, DisconnectedBubbleTagCmp, DestroyTagCmp>()
+                .WithNone<ExplodeTagCmp>()
                 .ForEach((Entity e, ref BubbleCmp bubbleCmp) =>
                 {
                     beginSimBuffer.AddComponent(e, new DisconnectedBubbleTagCmp());

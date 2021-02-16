@@ -1,5 +1,4 @@
-﻿using Assets.Code.Bubbles.Connections;
-using Assets.Code.DOTS;
+﻿using Assets.Code.DOTS;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Hybrid
@@ -14,7 +13,7 @@ namespace Assets.Code.Bubbles.Hybrid
             Entities
                 .WithoutBurst()
                 .WithStructuralChanges()
-                .WithAll<BubbleIsDroppingTagCmp, UnderBottomBoundsTagCmp>()
+                .WithAll<UnderBottomBoundsTagCmp>()
                 .WithNone<DestroyTagCmp>()
                 .ForEach((Entity e, Bubble bubble) =>
                 {

@@ -1,5 +1,6 @@
 ﻿
 using Assets.Code.Bubbles.Hybrid;
+using Assets.Code.DOTS;
 using Unity.Entities;
 
 namespace Assets.Code.Bubbles.Explosion
@@ -12,6 +13,7 @@ namespace Assets.Code.Bubbles.Explosion
                 .WithStructuralChanges()
                 .WithoutBurst()
                 .WithAll<ExplodeTagCmp>()
+                .WithNone<DestroyTagCmp>()
                 .ForEach((Entity e, Bubble bubbleMono) =>
                 {
                     bubbleMono.Explode();
