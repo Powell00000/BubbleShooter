@@ -1,18 +1,12 @@
 ﻿using Assets.Code.DOTS;
-using Assets.Code.Grid.Hybrid;
+using Assets.Code.Grid.Cells.Hybrid;
 using Unity.Entities;
-using Unity.Mathematics;
 
 namespace Assets.Code.Grid.Spawn.Hybrid
 {
-    internal class RowSpawnSystem : SystemBaseWithBarriers
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    internal class RowSpawnSystem : CellSpawnSystem
     {
-        private struct CellPosition : ICellData
-        {
-            public float3 Position { get; set; }
-            public float Diameter { get; set; }
-        }
-
         [Zenject.Inject]
         private Cell gridCellPrefab = null;
 
@@ -25,19 +19,13 @@ namespace Assets.Code.Grid.Spawn.Hybrid
         protected override void OnUpdate()
         {
             SpawnRowCmp spawnRowCmp = GetSingleton<SpawnRowCmp>();
+            SpawnCellsInRow(gridCellPrefab, spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
 
-            CellPosition[] row = GridEx.GetCellsPositionsInARow<CellPosition>(spawnRowCmp.CellDiameter, spawnRowCmp.Position, spawnRowCmp.CellCount);
+            var beginInitBuffer = beginInitializationBuffer.CreateCommandBuffer();
+            var endSimBuffer = endSimulationBuffer.CreateCommandBuffer();
 
-            for (int cellNumber = 0; cellNumber < row.Length; cellNumber++)
-            {
-                Cell cellHybridMono = UnityEngine.Object.Instantiate(gridCellPrefab).GetComponent<Cell>();
-                cellHybridMono.CreateAndSetupCellEntity(row[cellNumber]);
-            }
-
-            var beginSimBuffer = beginSimulationBuffer.CreateCommandBuffer();
-
-            beginSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());
-            beginSimBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
+            beginInitBuffer.CreateEntity(EntityManager.CreateArchetype(Archetypes.RowSpawned));
+            endSimBuffer.DestroyEntity(GetSingletonEntity<SpawnRowCmp>());
         }
     }
 }

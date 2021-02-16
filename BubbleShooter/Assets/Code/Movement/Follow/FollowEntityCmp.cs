@@ -7,6 +7,6 @@ namespace Assets.Code.Movement.Follow
     internal struct FollowEntityCmp : IComponentData
     {
         public Entity EntityToFollow;
-        public float3 UpdatedPosition;
+        public float3 TargetPosition;
     }
 }

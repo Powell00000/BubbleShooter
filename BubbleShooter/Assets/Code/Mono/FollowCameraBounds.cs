@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FollowCameraBounds : MonoBehaviour
 {
-    private enum TargetBound { Top, Bopttom, Left, Right };
+    private enum TargetBound { Top, Bottom, Left, Right };
 
     [SerializeField]
     private TargetBound target;
@@ -19,7 +19,7 @@ public class FollowCameraBounds : MonoBehaviour
             case TargetBound.Top:
                 targetPos = cameraBounds.Top;
                 break;
-            case TargetBound.Bopttom:
+            case TargetBound.Bottom:
                 targetPos = cameraBounds.Bottom;
                 break;
             case TargetBound.Left:
